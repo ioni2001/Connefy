@@ -22,4 +22,5 @@ public interface UI<ID,E extends Entity<ID>, ID2, E2 extends Entity<ID2>, ID3, E
     void replyMessage();
     void viewConversation();
     void lab5_4();
+    void replyAll();
 }
