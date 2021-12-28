@@ -201,6 +201,17 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         return listAux;
     }
 
+    public List<Message> getMessagesFromGroup() {
+        List<Message> listAux = new ArrayList<>();
+        User user = userService.getUser((Long) userService.getCurrentId());
+        Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
+        for(Message message : listOfMessages){
+            if(message.getTo().size() > 1 && message.getTo().contains(user))
+                listAux.add(message);
+        }
+        return listAux;
+    }
+
     public void replyMessage(Long id, String messageStr) {
         if(id > this.messageService.size() + 1)
             throw new NotExistanceException();
@@ -216,20 +227,30 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         this.messageService.add((E3) reply);
     }
 
+    public void replyAll(Long id, String messageStr) {
+        if(id > this.messageService.size() + 1)
+            throw new NotExistanceException();
+
+        Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
+        Message reply = null;
+        for(Message message : listOfMessages){
+            if(message.getId().equals(id)){
+                List<User> to = new ArrayList<>();
+                for(User user:message.getTo())
+                    if(user.getId() != userService.getCurrentId())
+                        to.add(user);
+                to.add(message.getFrom());
+                reply = new Message(this.messageService.size() + 1, userService.getUser((Long) userService.getCurrentId()), to, messageStr, message, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
+                break;
+            }
+        }
+        this.messageService.add((E3) reply);
+    }
+
     public List<Message> viewConversation(String firstEmail, String secondEmail) {
         List<Message> listAux = new ArrayList<>();
         User firstUser = userService.getUserByEmail(firstEmail);
         User secondUser = userService.getUserByEmail(secondEmail);
-
-        Iterable<Friendship> friendships = (Iterable<Friendship>) friendshipService.getAll();
-        boolean ok = false;
-        for(Friendship friendship : friendships)
-            if (friendship.getTuple().getLeft().equals(firstUser.getId()) && friendship.getTuple().getRight().equals(secondUser.getId()) || friendship.getTuple().getRight().equals(firstUser.getId()) && friendship.getTuple().getLeft().equals(secondUser.getId())){
-                ok = true;
-                break;
-        }
-        if(!ok)
-            throw new ValidationException("Users are not friends!");
 
         Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
         for(Message message:listOfMessages) {
