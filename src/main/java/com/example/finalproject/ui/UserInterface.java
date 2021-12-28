@@ -45,7 +45,8 @@ public class UserInterface <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2
         System.out.println("15. Reply message");
         System.out.println("16. View conversation");
         System.out.println("17. Cereri de prietenie");
-        System.out.println("18.  Exit");
+        System.out.println("18. Reply all");
+        System.out.println("19.  Exit");
         System.out.println("-------------MENU------------");
 
     }
@@ -59,7 +60,7 @@ public class UserInterface <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2
                 this.printOptions();
                 String input = in.next();
                 switch (input) {
-                    case "18":
+                    case "19":
                         run = false;
                         break;
                     case "1":
@@ -112,6 +113,9 @@ public class UserInterface <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2
                         break;
                     case "17":
                         this.lab5_4();
+                        break;
+                    case "18":
+                        this.replyAll();
                         break;
                     default:
                         System.out.println("Invalid option!");
@@ -288,6 +292,30 @@ public class UserInterface <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2
         in.nextLine();
         String message = in.nextLine();
         controller.replyMessage(id, message);
+    }
+
+    @Override
+    public void replyAll() {
+        List<Message> listAux = controller.getMessagesFromGroup();
+        if(listAux.size() == 0)
+            throw new ValidationException("You have no messages from groups!");
+
+        for(Message message:listAux){
+            System.out.println(message.getId()
+                    + "|"
+                    + message.getDate().format(Constants.DATE_TIME_FORMATTER)
+                    + "|"
+                    + message.getFrom().getFirstName() + " " + message.getFrom().getLastName()
+                    + "|"
+                    + message.getMessage());
+        }
+
+        System.out.println("Which message do you wanna reply? ");
+        Long id = Long.parseLong(in.next());
+        System.out.println("Message: ");
+        in.nextLine();
+        String message = in.nextLine();
+        controller.replyAll(id, message);
     }
 
     @Override
