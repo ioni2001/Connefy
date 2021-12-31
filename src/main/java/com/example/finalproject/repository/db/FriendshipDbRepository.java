@@ -174,4 +174,9 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
     public Friendship findOneByEmail(String email) {
         return null;
     }
+
+    @Override
+    public Friendship findOneByParola(String parola) {
+        return null;
+    }
 }

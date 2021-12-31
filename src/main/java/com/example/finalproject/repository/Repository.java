@@ -84,5 +84,7 @@ public interface Repository<ID, E extends Entity<ID>> {
     public List<Long> getAllIDs();
 
     public E findOneByEmail(String email);
+
+    E findOneByParola(String parola);
 }
 

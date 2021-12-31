@@ -8,6 +8,7 @@ import com.example.finalproject.domain.validators.exceptions.NotExistanceExcepti
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.FriendshipMemoryRepository;
 import com.example.finalproject.utils.Constants;
+import com.example.finalproject.utils.HashFunction;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -71,7 +72,8 @@ public class MessageDbRepository implements Repository<Long, Message> {
             if(resultSet.next()){
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
-                user = new User(firstName, lastName, email);
+                String parola = resultSet.getString(4);
+                user = new User(firstName, lastName, email,parola);
                 user.setId(resultSet.getLong(1));
                 return user;
             }
@@ -186,6 +188,11 @@ public class MessageDbRepository implements Repository<Long, Message> {
 
     @Override
     public Message findOneByEmail(String email) {
+        return null;
+    }
+
+    @Override
+    public Message findOneByParola(String parola) {
         return null;
     }
 

@@ -13,34 +13,58 @@ import com.example.finalproject.repository.db.FriendshipDbRepository;
 import com.example.finalproject.repository.db.MessageDbRepository;
 import com.example.finalproject.repository.db.RequestsDbRepository;
 import com.example.finalproject.repository.db.UserDbRepository;
-import com.example.finalproject.repository.file.FriendshipFileRepository;
-import com.example.finalproject.repository.file.UserFileRepository;
-import com.example.finalproject.repository.memory.FriendshipMemoryRepository;
-import com.example.finalproject.repository.memory.UserMemoryRepository;
 import com.example.finalproject.service.*;
-import com.example.finalproject.ui.UserInterface;
+import com.example.finalproject.utils.HashFunction;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Main {
-    public static void main(String[] args) {
+import java.io.IOException;
+
+public class Main extends Application {
+    @Override
+    public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("loginView.fxml"));
+        FXMLLoader fxmlLoader1 = new FXMLLoader(HelloApplication.class.getResource("registerNow.fxml"));
+        Scene scene1 = new Scene(fxmlLoader1.load(), 1000, 720);
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 720);
         Validator<User> userValidator = new UserValidator();
         Validator<Friendship> friendshipValidator = new FriendshipValidator();
 
 /*        UserFileRepository userFileRepository = new UserFileRepository("src/userFile.cvs",userValidator);
         FriendshipFileRepository friendshipFileRepository = new FriendshipFileRepository("src/friendshipFile.cvs",friendshipValidator);*/
 
-        Repository userDbRepository = new UserDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni", userValidator);
-        Repository friendshipDbRepository = new FriendshipDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni", friendshipValidator);
-        Repository messageDbRepository = new MessageDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni");
-        Repository requestsDbRepository = new RequestsDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni");
+        Repository userDbRepository = new UserDbRepository("jdbc:postgresql://localhost:5432/socialnet", "postgres", "230516", userValidator);
+        Repository friendshipDbRepository = new FriendshipDbRepository("jdbc:postgresql://localhost:5432/socialnet", "postgres", "230516", friendshipValidator);
+        Repository messageDbRepository = new MessageDbRepository("jdbc:postgresql://localhost:5432/socialnet", "postgres", "230516");
+        Repository requestsDbRepository = new RequestsDbRepository("jdbc:postgresql://localhost:5432/socialnet", "postgres", "230516");
 
         Service userService = new UserService(userDbRepository);
         Service friendshipService = new FriendshipService(friendshipDbRepository);
         Service messageService = new MessageService(messageDbRepository);
         Service requestService = new RequestsService(requestsDbRepository);
-
         Controller<Long, User, Long, Friendship, Long, Message, Long, Cerere> controller = new Controller((UserService) userService, (FriendshipService) friendshipService, (MessageService) messageService, (RequestsService) requestService);
+        LoginController loginController = fxmlLoader.getController();
+        RegisterController registerController = fxmlLoader1.getController();
+        registerController.setController(controller);
+        loginController.setController(controller);
+        stage.setTitle("Hello!");
+        stage.setScene(scene);
+        stage.show();
+        Stage stage1 = new Stage();
+        stage1.setScene(scene1); //aici bagi scena ta cu mesaje, sau meniu ce ai
+        loginController.getLogButt().setOnAction(e -> {
+            loginController.onLogin();
+             //..... aici ii dai show
+        });
+        loginController.getRegister().setOnAction(e ->{
+            stage1.show();
+            registerController.reset();
+        });
+    }
 
-        UserInterface<Long,User, Long, Friendship, Long, Message, Long, Cerere> Ui = new UserInterface<>(controller);
-        Ui.startUI();
+    public static void main(String[] args) {
+        launch();
     }
 }

@@ -160,4 +160,9 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
     public Cerere findOneByEmail(String email) {
         return null;
     }
+
+    @Override
+    public Cerere findOneByParola(String parola) {
+        return null;
+    }
 }
