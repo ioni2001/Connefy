@@ -15,6 +15,9 @@ public class UserValidator implements Validator<User> {
         if(entity.getEmail().isEmpty() || !entity.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")){
             val = val.concat("Invalid email! ");
         }
+        if(entity.getParola().isEmpty()){
+            val = val.concat("Parola invalida!");
+        }
         if(!val.isEmpty())
             throw new ValidationException(val);
     }

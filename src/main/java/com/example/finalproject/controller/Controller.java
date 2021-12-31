@@ -10,6 +10,7 @@ import com.example.finalproject.service.MessageService;
 import com.example.finalproject.service.RequestsService;
 import com.example.finalproject.service.UserService;
 import com.example.finalproject.utils.Constants;
+import com.example.finalproject.utils.HashFunction;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -48,12 +49,14 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         return friendshipService.getAll();
     }
 
-    public void logIn(String email){
+    public void logIn(String email, String parola){
         ID id;
         boolean ok = false;
         Iterable<User> entities = (Iterable<User>) userService.getAll();
+        HashFunction hashFunction = new HashFunction();
+        String parola_hash = hashFunction.getHash(parola,"MD5");
         for(User user: entities){
-            if(user.getEmail().equals(email)) {
+            if(user.getEmail().equals(email) && user.getParola().equals(parola_hash)) {
                 this.userService.setCurrentUserId((ID) user.getId());
                 ok = true;
                 break;
@@ -67,8 +70,8 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         return userService.getCurrentEmail();
     }
 
-    public void addUser(String firstName, String lastName, String email){
-        User user = new User(firstName, lastName, email);
+    public void addUser(String firstName, String lastName, String email, String parola){
+        User user = new User(firstName, lastName, email, parola);
         this.userService.add((E)user);
     }
 
@@ -127,6 +130,10 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         if(!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
             throw new ValidationException("Email invalid!");
         return userService.findOneByEmail(email);
+    }
+
+    public User findOneByParola(String parola){
+        return userService.findOneByParola(parola);
     }
 
     public List<Cerinte12DTO> lab5_1_srv(User a){

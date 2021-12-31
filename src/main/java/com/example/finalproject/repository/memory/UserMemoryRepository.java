@@ -141,4 +141,9 @@ public class UserMemoryRepository<ID, E extends Entity<ID>> implements Repositor
     public E findOneByEmail(String email){
         return null;
     }
+
+    @Override
+    public E findOneByParola(String parola) {
+        return null;
+    }
 }

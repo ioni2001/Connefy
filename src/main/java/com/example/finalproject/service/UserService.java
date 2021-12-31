@@ -93,4 +93,11 @@ public class UserService <ID, E extends Entity<ID>> implements Service<ID, E> {
             throw new NotExistanceException();
         return user;
     }
+
+    public User findOneByParola(String parola){
+        User user = (User) userRepository.findOneByParola(parola);
+        if(user == null)
+            throw new NotExistanceException();
+        return user;
+    }
 }

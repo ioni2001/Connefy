@@ -4,7 +4,7 @@ import com.example.finalproject.controller.Controller;
 import com.example.finalproject.domain.*;
 import com.example.finalproject.domain.validators.ValidationException;
 import com.example.finalproject.domain.validators.exceptions.*;
-import jdk.swing.interop.SwingInterOpUtils;
+//import jdk.swing.interop.SwingInterOpUtils;
 import com.example.finalproject.service.UserService;
 import com.example.finalproject.service.UserService;
 import com.example.finalproject.service.FriendshipService;
@@ -191,7 +191,9 @@ public class UserInterface <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2
         this.printAll();
         System.out.println("Enter email to log in: ");
         String email = in.next();
-        controller.logIn(email);
+        System.out.println("Enter password: ");
+        String password = in.next();
+        controller.logIn(email,password);
     }
 
     @Override
@@ -202,7 +204,9 @@ public class UserInterface <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2
         String lastName = in.next();
         System.out.println("Enter email: ");
         String email = in.next();
-        controller.addUser(firstName, lastName, email);
+        System.out.println("Password: ");
+        String parola = in.next();
+        controller.addUser(firstName, lastName, email,parola);
     }
 
     @Override
