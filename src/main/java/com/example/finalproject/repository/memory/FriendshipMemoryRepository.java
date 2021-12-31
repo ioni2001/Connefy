@@ -120,6 +120,11 @@ public class FriendshipMemoryRepository<ID, E extends Entity<ID>> implements Rep
         return null;
     }
 
+    @Override
+    public E findOneByParola(String parola) {
+        return null;
+    }
+
     /**
      * Clears the container where the entities are stored
      * */

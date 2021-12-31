@@ -7,7 +7,7 @@ module com.example.finalproject {
     requires org.kordamp.bootstrapfx.core;
     requires javafx.graphics;
     requires java.sql;
-    requires jdk.unsupported.desktop;
+    //requires jdk.unsupported.desktop;
 
     opens com.example.finalproject to javafx.fxml;
     exports com.example.finalproject;
