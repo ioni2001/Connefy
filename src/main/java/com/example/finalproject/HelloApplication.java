@@ -53,7 +53,11 @@ public class HelloApplication extends Application {
         Stage stage1 = new Stage();
         stage1.setScene(scene1); //aici bagi scena ta cu mesaje, sau meniu ce ai
         loginController.getLogButt().setOnAction(e -> {
-            loginController.onLogin();
+            try {
+                loginController.onLogin();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             stage1.show(); //aici ii dai show
             System.out.println(loginController.getController().getCurrentEmail());
             HashFunction function = new HashFunction();
