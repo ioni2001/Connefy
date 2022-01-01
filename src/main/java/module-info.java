@@ -9,6 +9,9 @@ module com.example.finalproject {
     requires java.sql;
     //requires jdk.unsupported.desktop;
 
-    opens com.example.finalproject to javafx.fxml;
+    opens com.example.finalproject to javafx.fxml, javafx.base, javafx.graphics;
+    opens com.example.finalproject.domain;
+    opens com.example.finalproject.repository;
+    opens com.example.finalproject.service;
     exports com.example.finalproject;
 }

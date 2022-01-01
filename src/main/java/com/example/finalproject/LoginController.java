@@ -6,19 +6,28 @@ import com.example.finalproject.domain.validators.ValidationException;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
 import com.example.finalproject.utils.HashFunction;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Bloom;
 import javafx.scene.effect.Reflection;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class LoginController {
 
     private Controller controller;
     private User activeUser;
+    private Stage primaryStage;
 
     public void setController(Controller controller) {
         this.controller = controller;
+    }
+    public void setStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     public Controller getController() {
@@ -48,12 +57,36 @@ public class LoginController {
     @FXML
     Button register;
 
+
     @FXML
-    protected void onLogin(){
+    protected void onLogin() throws IOException {
         if(validation()){
             controller.logIn(username.textProperty().getValue(),password.textProperty().getValue());
             logButt.setEffect(new Bloom());
+
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("main-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            primaryStage.setTitle("Connefy");
+            primaryStage.setScene(scene);
+
+            MainController mainController = fxmlLoader.getController();
+            mainController.setService(controller);
+            mainController.setStage(primaryStage);
         }
+    }
+
+    @FXML
+    protected void onRegister() throws IOException{
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("registerNow.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        RegisterController registerController = fxmlLoader.getController();
+        registerController.setController(controller);
+        registerController.setStage(primaryStage);
     }
 
     @FXML
