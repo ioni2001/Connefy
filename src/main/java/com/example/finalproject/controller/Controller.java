@@ -271,7 +271,7 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     }
 
     public void addCerere(String email1, String email2, String status){
-        Cerere c = new Cerere(email1, email2,status);
+        Cerere c = new Cerere(email1, email2,status,LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
         this.requestsService.add((E4) c);
     }
 

@@ -101,7 +101,7 @@ public class UserDbRepository implements Repository<Long, User> {
             if(entity.getEmail().equals(user.getEmail()))
                 throw new ExistanceException();
         }
-        String sql = "insert into users (id, firstname, lastname, email, parola ) values (?, ?, ?, ?, ?)";
+        String sql = "insert into users (id, firstname, lastname, email, parola , data ) values (?, ?, ?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
