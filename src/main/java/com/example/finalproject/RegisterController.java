@@ -59,6 +59,22 @@ public class RegisterController {
     Text inregistrat;
 
     @FXML
+    Button back;
+
+    @FXML
+    public void onBack() throws IOException{
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("loginView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        LoginController loginController = fxmlLoader.getController();
+        loginController.setController(controller);
+        loginController.setStage(primaryStage);
+    }
+
+    @FXML
     public void onReg() throws IOException {
         try {
             controller.addUser(nume.getText(), prenume.getText(), email.getText(), password.getText());

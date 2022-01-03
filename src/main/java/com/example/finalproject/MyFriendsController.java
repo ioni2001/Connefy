@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import com.example.finalproject.Main;
 import com.example.finalproject.controller.Controller;
+import com.example.finalproject.domain.Cerere;
 import com.example.finalproject.domain.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -74,6 +75,18 @@ public class MyFriendsController {
 
         if(selected != null){
             service.removeFriend(selected.getEmail());
+            long id_req = -1;
+            for(Object c: service.getRequests(service.getCurrentEmail())){
+                if(((Cerere) c).getEmail_sender().equals(selected.getEmail())){
+                    id_req = ((Cerere) c).getId();
+                }
+            }
+            for(Object c: service.getRequests(selected.getEmail())){
+                if(((Cerere)c).getEmail_recv().equals(selected.getEmail())){
+                    id_req = ((Cerere)c).getId();
+                }
+            }
+            service.removeCerere(id_req);
             MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Delete friend", "Deleted");
         }
         else
