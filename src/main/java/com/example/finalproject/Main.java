@@ -29,10 +29,10 @@ public class Main extends Application {
         Validator<User> userValidator = new UserValidator();
         Validator<Friendship> friendshipValidator = new FriendshipValidator();
 
-        Repository<Long, User> userDbRepository = new UserDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni", userValidator);
-        Repository<Long, Friendship> friendshipDbRepository = new FriendshipDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni", friendshipValidator);
-        Repository<Long, Message> messageDbRepository = new MessageDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni");
-        Repository<Long, Cerere> requestsDbRepository = new RequestsDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni");
+        Repository<Long, User> userDbRepository = new UserDbRepository("jdbc:postgresql://localhost:5432/socialnet", "postgres", "230516", userValidator);
+        Repository<Long, Friendship> friendshipDbRepository = new FriendshipDbRepository("jdbc:postgresql://localhost:5432/socialnet", "postgres", "230516", friendshipValidator);
+        Repository<Long, Message> messageDbRepository = new MessageDbRepository("jdbc:postgresql://localhost:5432/socialnet", "postgres", "230516");
+        Repository<Long, Cerere> requestsDbRepository = new RequestsDbRepository("jdbc:postgresql://localhost:5432/socialnet", "postgres", "230516");
 
         Service userService = new UserService(userDbRepository);
         Service friendshipService = new FriendshipService(friendshipDbRepository);

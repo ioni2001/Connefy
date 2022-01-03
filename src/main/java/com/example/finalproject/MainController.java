@@ -78,5 +78,16 @@ public class MainController {
         loginController.setStage(primaryStage);
     }
 
+    @FXML
+    public void handleRequestsButton(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("requests_view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
 
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        RequestsController requestsController = fxmlLoader.getController();
+        requestsController.setService(service);
+        requestsController.setStage(primaryStage);
+    }
 }

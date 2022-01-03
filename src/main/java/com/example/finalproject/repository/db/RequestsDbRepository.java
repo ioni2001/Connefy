@@ -29,7 +29,7 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
         Set<Cerere> cereri = new HashSet<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement(
-                     "SELECT cereri.id, cereri.status, cereri.email_sender, cereri.email_recv\n" +
+                     "SELECT cereri.id, cereri.status, cereri.email_sender, cereri.email_recv, cereri.data\n" +
                      "FROM users\n" +
                      "INNER JOIN cereri ON cereri.email_recv = users.email;");
              ResultSet resultSet = statement.executeQuery()) {
@@ -38,8 +38,9 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
                 String status = resultSet.getString("status");
                 String email1 = resultSet.getString("email_sender");
                 String email2 = resultSet.getString("email_recv");
+                String data = resultSet.getString("data");
 
-                Cerere c = new Cerere(email1, email2,status);
+                Cerere c = new Cerere(email1, email2,status,data);
                 c.setId(id);
                 cereri.add(c);
              }
@@ -76,13 +77,14 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
         }
         cerere.setStatus("pending");
 
-        String sql = "insert into cereri (id, status, email_sender, email_recv ) values (?, ?, ?, ?)";
+        String sql = "insert into cereri (id, status, email_sender, email_recv, data ) values (?, ?, ?, ?,?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)){
                     ps.setInt(1, Integer.parseInt((cerere.getId().toString())));
                     ps.setString(2, (cerere).getStatus());
                     ps.setString(3, (cerere).getEmail_sender());
                     ps.setString(4, (cerere).getEmail_recv());
+                    ps.setString(5, (cerere).getDate());
 
             ps.executeUpdate();
             return cerere;
