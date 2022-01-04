@@ -197,14 +197,20 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         this.messageService.add((E3) message);
     }
 
+    public boolean isIn(List<User> list, User user) {
+        for(User user1:list)
+            if(user1.getEmail().equals(user.getEmail()))
+                return true;
+        return false;
+    }
+
     public List<Message> userMessages() {
         List<Message> listAux = new ArrayList<>();
         User user = userService.getUser((Long) userService.getCurrentId());
         Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
         for(Message message : listOfMessages)
-            if(message.getTo().contains(user))
+            if (isIn(message.getTo(), user))
                 listAux.add(message);
-
         return listAux;
     }
 
@@ -213,7 +219,7 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         User user = userService.getUser((Long) userService.getCurrentId());
         Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
         for(Message message : listOfMessages){
-            if(message.getTo().size() > 1 && message.getTo().contains(user))
+            if(message.getTo().size() > 1 && isIn(message.getTo(), user))
                 listAux.add(message);
         }
         return listAux;
@@ -222,11 +228,10 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     public void replyMessage(Long id, String messageStr) {
         if(id > this.messageService.size() + 1)
             throw new NotExistanceException();
-
         Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
         Message reply = null;
-        for(Message message : listOfMessages){
-            if(message.getId().equals(id)){
+        for(Message message : listOfMessages) {
+            if (message.getId().equals(id)) {
                 reply = new Message(this.messageService.size() + 1, userService.getUser((Long) userService.getCurrentId()), Arrays.asList(message.getFrom()), messageStr, message, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
                 break;
             }
@@ -261,8 +266,8 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
 
         Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
         for(Message message:listOfMessages) {
-            if(message.getFrom().equals(firstUser) && message.getTo().contains(secondUser) ||
-               message.getFrom().equals(secondUser) && message.getTo().contains(firstUser))
+            if(message.getFrom().getEmail().equals(firstUser.getEmail()) && isIn(message.getTo(), secondUser) ||
+               message.getFrom().getEmail().equals(secondUser.getEmail()) && isIn(message.getTo(), firstUser))
                 listAux.add(message);
         }
         return listAux.stream().sorted(Comparator

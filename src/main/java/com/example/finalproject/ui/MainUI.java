@@ -1,5 +1,4 @@
-package com.example.finalproject;
-
+package com.example.finalproject.ui;
 import com.example.finalproject.controller.Controller;
 import com.example.finalproject.domain.Cerere;
 import com.example.finalproject.domain.Friendship;
@@ -14,40 +13,25 @@ import com.example.finalproject.repository.db.MessageDbRepository;
 import com.example.finalproject.repository.db.RequestsDbRepository;
 import com.example.finalproject.repository.db.UserDbRepository;
 import com.example.finalproject.service.*;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import com.example.finalproject.ui.*;
 
-import java.io.IOException;
-
-public class Main extends Application {
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("loginView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 720);
+public class MainUI {
+    public static void main(String[] args) {
         Validator<User> userValidator = new UserValidator();
         Validator<Friendship> friendshipValidator = new FriendshipValidator();
-
-        Repository<Long, User> userDbRepository = new UserDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni", userValidator);
-        Repository<Long, Friendship> friendshipDbRepository = new FriendshipDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni", friendshipValidator);
-        Repository<Long, Message> messageDbRepository = new MessageDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni");
-        Repository<Long, Cerere> requestsDbRepository = new RequestsDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni");
+        Repository userDbRepository = new UserDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni", userValidator);
+        Repository friendshipDbRepository = new FriendshipDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni", friendshipValidator);
+        Repository messageDbRepository = new MessageDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni");
+        Repository requestsDbRepository = new RequestsDbRepository("jdbc:postgresql://localhost:2001/SocialNetwork", "postgres", "ioni");
 
         Service userService = new UserService(userDbRepository);
         Service friendshipService = new FriendshipService(friendshipDbRepository);
         Service messageService = new MessageService(messageDbRepository);
         Service requestService = new RequestsService(requestsDbRepository);
-        Controller<Long, User, Long, Friendship, Long, Message, Long, Cerere> controller = new Controller((UserService) userService, (FriendshipService) friendshipService, (MessageService) messageService, (RequestsService) requestService);
-        LoginController loginController = fxmlLoader.getController();
-        loginController.setController(controller);
-        stage.setTitle("Connefy");
-        stage.setScene(scene);
-        loginController.setStage(stage);
-        stage.show();
-    }
 
-    public static void main(String[] args) {
-        launch();
+        Controller<Long, User, Long, Friendship, Long, Message, Long, Cerere> controller = new Controller((UserService) userService, (FriendshipService) friendshipService, (MessageService) messageService, (RequestsService) requestService);
+
+        UserInterface<Long,User, Long, Friendship, Long, Message, Long, Cerere> Ui = new UserInterface<>(controller);
+        Ui.startUI();
     }
 }
