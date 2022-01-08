@@ -9,7 +9,7 @@ import com.example.finalproject.utils.Constants;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class FriendshipService  <ID, E extends Entity<ID>> implements Service<ID, E> {
+public class FriendshipService  <ID, E extends Entity<ID>> extends Observable implements Service<ID, E>{
 
     private Repository<ID, E> friendshipRepository;
 
@@ -25,6 +25,8 @@ public class FriendshipService  <ID, E extends Entity<ID>> implements Service<ID
     @Override
     public void setCurrentUserId(ID id) {
         friendshipRepository.setCurrentId(id);
+        setChanged();
+        notifyObservers(Friendship.class);
     }
 
     @Override
@@ -56,6 +58,8 @@ public class FriendshipService  <ID, E extends Entity<ID>> implements Service<ID
         Friendship friendship = new Friendship(tuple, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
         friendship.setId(this.findFistFreeId());
         this.friendshipRepository.save((E)friendship);
+        setChanged();
+        notifyObservers(Friendship.class);
     }
 
     @Override
@@ -72,6 +76,8 @@ public class FriendshipService  <ID, E extends Entity<ID>> implements Service<ID
         }
         if(!ok)
             throw new NotExistanceException();
+        setChanged();
+        notifyObservers(Friendship.class);
     }
 
     @Override
@@ -88,6 +94,8 @@ public class FriendshipService  <ID, E extends Entity<ID>> implements Service<ID
         }
         if(!ok)
             throw new NotExistanceException();
+        setChanged();
+        notifyObservers(Friendship.class);
     }
 
 
@@ -106,6 +114,8 @@ public class FriendshipService  <ID, E extends Entity<ID>> implements Service<ID
         for(Long id:idToDel){
             friendshipRepository.delete((ID) id);
         }
+        setChanged();
+        notifyObservers(Friendship.class);
     }
 
     public int numberOfCommunities(List<Long> IDs){

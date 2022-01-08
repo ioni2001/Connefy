@@ -1,6 +1,7 @@
 package com.example.finalproject.service;
 import java.lang.Long;
 import java.util.List;
+import java.util.Observable;
 
 import com.example.finalproject.domain.*;
 import com.example.finalproject.domain.validators.ValidationException;
@@ -9,7 +10,7 @@ import com.example.finalproject.domain.validators.exceptions.NotExistanceExcepti
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.UserMemoryRepository;
 
-public class UserService <ID, E extends Entity<ID>> implements Service<ID, E> {
+public class UserService <ID, E extends Entity<ID>> extends Observable implements Service<ID, E> {
 
     private Repository<ID, E> userRepository;
 
@@ -27,6 +28,8 @@ public class UserService <ID, E extends Entity<ID>> implements Service<ID, E> {
     @Override
     public void setCurrentUserId(ID id) {
         userRepository.setCurrentId(id);
+        setChanged();
+        notifyObservers(User.class);
     }
 
     @Override
@@ -58,6 +61,8 @@ public class UserService <ID, E extends Entity<ID>> implements Service<ID, E> {
 
         e.setId((ID)this.findFistFreeId());
         this.userRepository.save(e);
+        setChanged();
+        notifyObservers(User.class);
     }
 
     public List<Long> getAllIDs(){
@@ -67,6 +72,8 @@ public class UserService <ID, E extends Entity<ID>> implements Service<ID, E> {
     @Override
     public void remove(E e) {
         this.userRepository.delete(e.getId());
+        setChanged();
+        notifyObservers(User.class);
     }
 
     public User getUser(Long id){
@@ -85,6 +92,8 @@ public class UserService <ID, E extends Entity<ID>> implements Service<ID, E> {
     @Override
     public void update(E entity){
         userRepository.update(entity);
+        setChanged();
+        notifyObservers(User.class);
     }
 
     public User findOneByEmail(String email){
