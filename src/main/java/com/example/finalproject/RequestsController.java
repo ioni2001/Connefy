@@ -20,10 +20,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class RequestsController {
+public class RequestsController implements Observer {
 
     private Controller service;
     private Stage primaryStage;
@@ -32,6 +34,7 @@ public class RequestsController {
 
     public void setService(Controller service) {
         this.service = service;
+        this.service.addObserver(this);
         initModel();
     }
 
@@ -147,5 +150,10 @@ public class RequestsController {
         else{
             MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Already declined or approved !");
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        initModel();
     }
 }

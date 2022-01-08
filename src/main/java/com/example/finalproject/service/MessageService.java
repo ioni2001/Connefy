@@ -9,7 +9,7 @@ import com.example.finalproject.utils.Constants;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class MessageService  <ID, E extends Entity<ID>> implements Service<ID, E> {
+public class MessageService  <ID, E extends Entity<ID>> extends Observable implements Service<ID, E> {
 
     private Repository<ID, E> messageRepository;
 
@@ -20,6 +20,8 @@ public class MessageService  <ID, E extends Entity<ID>> implements Service<ID, E
     @Override
     public void add(E e) {
         this.messageRepository.save(e);
+        setChanged();
+        notifyObservers(Message.class);
     }
 
     public Long size(){
