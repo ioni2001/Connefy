@@ -22,10 +22,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class MyFriendsController {
+public class MyFriendsController implements Observer {
     private Controller service;
     private Stage primaryStage;
     ObservableList<User> model = FXCollections.observableArrayList();
@@ -47,6 +49,7 @@ public class MyFriendsController {
 
     public void setService(Controller service){
         this.service = service;
+        this.service.addObserver(this);
         initModel();
     }
 
@@ -113,5 +116,10 @@ public class MyFriendsController {
         List<User> users = (List<User>) service.getFriends(service.findOneByEmail(service.getCurrentEmail()))
                         .stream().filter(p1.or(p2)).collect(Collectors.toList());
         model.setAll(users);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        initModel();
     }
 }

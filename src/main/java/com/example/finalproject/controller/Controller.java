@@ -261,8 +261,8 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
 
     public List<Message> viewConversation(String firstEmail, String secondEmail) {
         List<Message> listAux = new ArrayList<>();
-        User firstUser = userService.getUserByEmail(firstEmail);
-        User secondUser = userService.getUserByEmail(secondEmail);
+        User firstUser = userService.findOneByEmail(firstEmail);
+        User secondUser = userService.findOneByEmail(secondEmail);
 
         Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
         for(Message message:listOfMessages) {
@@ -300,5 +300,12 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
 
     public void updateRequest(Cerere c){
         requestsService.update((E4) c);
+    }
+
+    public void addObserver(Observer obj) {
+        friendshipService.addObserver(obj);
+        messageService.addObserver(obj);
+        requestsService.addObserver(obj);
+        userService.addObserver(obj);
     }
 }
