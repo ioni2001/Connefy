@@ -77,7 +77,6 @@ public class RequestsController implements Observer {
                 service.addFriend(a.getEmail_sender());
                 a.setStatus("approved");
                 service.updateRequest(a);
-                initModel();
             }
             else{
                 MessageAlert.showErrorMessage(null, "Already friends !");
@@ -129,10 +128,8 @@ public class RequestsController implements Observer {
     public void declineButt(ActionEvent actionEvent) {
         Cerere a = this.cereri.getSelectionModel().getSelectedItem();
         if(a.getStatus().equals("pending")) {
-            service.addFriend(a.getEmail_sender());
             a.setStatus("declined");
             service.updateRequest(a);
-            initModel();
             MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Declined !");
         }
         else{
@@ -143,7 +140,7 @@ public class RequestsController implements Observer {
     public void cancelButt(ActionEvent actionEvent) {
         Cerere a = this.cereri.getSelectionModel().getSelectedItem();
         if(a.getStatus().equals("pending")) {
-            service.removeCerere(a.getId());
+            service.removeRequest(a.getId());
             initModel();
             MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Canceled !");
         }

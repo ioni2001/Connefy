@@ -84,4 +84,10 @@ public class RequestsService<ID,E extends Entity<ID>> extends Observable impleme
         setChanged();
         notifyObservers(Cerere.class);
     }
+
+    public void removeCerere(String email1, String email2){
+        this.requestRepo.removeFriendRequest(email1, email2);
+        setChanged();
+        notifyObservers(Cerere.class);
+    }
 }

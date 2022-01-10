@@ -6,10 +6,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.MainController">
     <children>
         <Pane layoutX="512.0" layoutY="142.0" prefHeight="458.0" prefWidth="474.0">
             <children>
@@ -21,26 +22,31 @@
                 </Text>
                 <Button layoutX="167.0" layoutY="129.0" mnemonicParsing="false" onAction="#handleMyFriendsButton" prefHeight="58.0" prefWidth="140.0" style="-fx-background-color: white;" text="My friends" textAlignment="CENTER" textFill="#3558c2" />
             <Button fx:id="butReq" layoutX="167.0" layoutY="229.0" mnemonicParsing="false" onAction="#handleRequestsButton" prefHeight="58.0" prefWidth="140.0" style="-fx-background-color: white;" text="Friend Requests" textFill="#3558c2" />
+            <Button layoutX="167.0" layoutY="333.0" mnemonicParsing="false" onAction="#handleMessangerButton" prefHeight="58.0" prefWidth="140.0" style="-fx-background-color: white;" text="Messenger" textFill="#3558c2" />
             </children>
         </Pane>
       <HBox layoutX="-1.0" layoutY="-2.0" prefHeight="414.0" prefWidth="466.0">
          <children>
-            <Text fill="#fcfcfc" strokeType="OUTSIDE" strokeWidth="0.0" text="User Logged In:">
-               <font>
-                  <Font size="24.0" />
-               </font>
-               <HBox.margin>
-                  <Insets top="50.0" />
-               </HBox.margin>
-            </Text>
-            <Label fx:id="userLoggedInLbl" prefHeight="38.0" prefWidth="273.0" text="Label" textFill="#faf5f5">
-               <font>
-                  <Font size="24.0" />
-               </font>
-               <HBox.margin>
-                  <Insets top="50.0" />
-               </HBox.margin>
-            </Label>
+            <VBox prefHeight="414.0" prefWidth="466.0">
+               <children>
+                  <Text fill="#fcfcfc" strokeType="OUTSIDE" strokeWidth="0.0" text="User Logged In:">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="20.0" top="50.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Label fx:id="userLoggedInLbl" prefHeight="38.0" prefWidth="273.0" text="Label" textFill="#faf5f5">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="20.0" top="20.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+            </VBox>
          </children>
       </HBox>
       <Button layoutX="44.0" layoutY="668.0" mnemonicParsing="false" onAction="#handleLogOutButton" prefHeight="38.0" prefWidth="79.0" text="LogOut" textFill="#3558c2" />

@@ -64,18 +64,7 @@ public class FriendshipService  <ID, E extends Entity<ID>> extends Observable im
 
     @Override
     public void remove(E e) {
-        Iterable<Friendship> allFriendships = (Iterable<Friendship>) friendshipRepository.getAllEntities();
-        boolean ok = false;
-        for (Friendship friendship : allFriendships) {
-            if ((friendship.getTuple().getLeft().equals(e.getId()) && friendship.getTuple().getRight().equals(this.getCurrentId()))
-                    || (friendship.getTuple().getRight().equals(e.getId()) && friendship.getTuple().getLeft().equals(this.getCurrentId()))) {
-                this.friendshipRepository.delete((ID) friendship.getId());
-                ok = true;
-                break;
-            }
-        }
-        if(!ok)
-            throw new NotExistanceException();
+        this.friendshipRepository.removeFriendship(this.getCurrentId(), e.getId());
         setChanged();
         notifyObservers(Friendship.class);
     }
@@ -104,15 +93,10 @@ public class FriendshipService  <ID, E extends Entity<ID>> extends Observable im
      * @param e - entity
      * */
     public void removeAll(E e){
-        Iterable<Friendship> allFriendships = (Iterable<Friendship>) friendshipRepository.getAllEntities();
-        List<Long> idToDel = new ArrayList<>();
+        Iterable<Friendship> allFriendships = (Iterable<Friendship>) this.friendshipRepository.friendshipsOfAnUser((User)e);
+
         for(Friendship friendship:allFriendships){
-            if(friendship.getTuple().getLeft().equals(e.getId()) || friendship.getTuple().getRight().equals(e.getId())) {
-                idToDel.add(friendship.getId());
-            }
-        }
-        for(Long id:idToDel){
-            friendshipRepository.delete((ID) id);
+            friendshipRepository.delete((ID) friendship.getId());
         }
         setChanged();
         notifyObservers(Friendship.class);
@@ -130,5 +114,8 @@ public class FriendshipService  <ID, E extends Entity<ID>> extends Observable im
         Networking networking = new Networking((Iterable<Friendship>) friendshipRepository.getAllEntities(), IDs.get(IDs.size()-1) + 1, IDs);
         networking.setFriendships();
         return networking.mostSociableCommunity();
+    }
+    public Iterable<Friendship> getFriends(User user){
+        return (Iterable<Friendship>) this.friendshipRepository.friendshipsOfAnUser(user);
     }
 }

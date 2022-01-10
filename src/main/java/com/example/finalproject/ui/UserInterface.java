@@ -227,7 +227,6 @@ public class UserInterface <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2
     public void removeFriend() {
         System.out.println("Enter email: ");
         String email = in.next();
-        controller.removeFriend(email);
     }
 
     @Override

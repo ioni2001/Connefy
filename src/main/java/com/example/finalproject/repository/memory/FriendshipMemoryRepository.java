@@ -125,6 +125,22 @@ public class FriendshipMemoryRepository<ID, E extends Entity<ID>> implements Rep
         return null;
     }
 
+    @Override
+    public Iterable<E> friendshipsOfAnUser(User e) {
+        return null;
+    }
+
+    @Override
+    public void removeFriendship(ID id1, ID id2) {
+
+    }
+
+    @Override
+    public void removeFriendRequest(String email1, String email2) {
+
+    }
+
+
     /**
      * Clears the container where the entities are stored
      * */

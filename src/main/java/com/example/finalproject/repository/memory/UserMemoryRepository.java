@@ -146,4 +146,19 @@ public class UserMemoryRepository<ID, E extends Entity<ID>> implements Repositor
     public E findOneByParola(String parola) {
         return null;
     }
+
+    @Override
+    public Iterable<E> friendshipsOfAnUser(User e) {
+        return null;
+    }
+
+    @Override
+    public void removeFriendship(ID id1, ID id2) {
+
+    }
+
+    @Override
+    public void removeFriendRequest(String email1, String email2) {
+
+    }
 }

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.MyFriendsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.MessengerController">
     <children>
         <VBox layoutX="-7.0" layoutY="-6.0" prefHeight="720.0" prefWidth="1000.0">
             <children>
@@ -22,7 +22,7 @@
                         <Insets left="10.0" top="20.0" />
                     </VBox.margin>
                 </Button>
-                <GridPane prefHeight="534.0" prefWidth="874.0">
+                <GridPane prefHeight="550.0" prefWidth="874.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
@@ -31,7 +31,7 @@
                         <RowConstraints maxHeight="242.39998779296874" minHeight="10.0" prefHeight="234.39998779296874" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <HBox prefHeight="100.0" prefWidth="200.0">
+                        <HBox prefHeight="100.0" prefWidth="0.0">
                             <children>
                                 <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="592.0" promptText="Search on connefy">
                                     <HBox.margin>
@@ -41,28 +41,44 @@
                               <Font size="14.0" />
                            </font>
                                 </TextField>
-                                <Button mnemonicParsing="false" onAction="#handleRemoveFriendBtn" prefHeight="39.0" prefWidth="138.0" text="Remove Friend" textFill="#3558c2">
+                                <Button mnemonicParsing="false" onAction="#handleViewConversationBtn" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: white;" text="View Conversation" textFill="#3558c2">
                                     <HBox.margin>
                                         <Insets left="50.0" />
                                     </HBox.margin>
                                 </Button>
                             </children>
                         </HBox>
-                        <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                        <TableView fx:id="usersTable" prefHeight="242.0" prefWidth="742.0" GridPane.rowIndex="1">
                             <columns>
-                                <TableColumn fx:id="firstNameColumn" prefWidth="301.60003662109375" text="First Name" />
-                                <TableColumn fx:id="lastNameColumn" prefWidth="301.5999755859375" text="Last Name" />
-                                <TableColumn fx:id="emailColumn" prefWidth="315.2000732421875" text="Email" />
+                                <TableColumn fx:id="firstNameColumn" prefWidth="337.6000213623047" text="First Name" />
+                                <TableColumn fx:id="lastNameColumn" prefWidth="344.0" text="Last Name" />
+                                <TableColumn fx:id="emailColumn" prefWidth="316.79998779296875" text="Email" />
                             </columns>
-                     <GridPane.margin>
-                        <Insets left="40.0" right="40.0" />
-                     </GridPane.margin>
+                            <GridPane.margin>
+                                <Insets left="40.0" right="40.0" />
+                            </GridPane.margin>
                         </TableView>
                     </children>
                     <padding>
                         <Insets top="120.0" />
                     </padding>
                 </GridPane>
+            <TextField fx:id="messageText" prefHeight="123.0" prefWidth="610.0" promptText="Type your message....">
+               <VBox.margin>
+                  <Insets bottom="20.0" left="40.0" right="350.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </TextField>
+            <AnchorPane>
+               <VBox.margin>
+                  <Insets left="800.0" />
+               </VBox.margin>
+               <children>
+                  <Button layoutX="-71.0" layoutY="-120.0" mnemonicParsing="false" onAction="#handleSendBtn" prefHeight="56.0" prefWidth="146.0" style="-fx-background-color: white;" text="Send" textFill="#3558c2" />
+               </children>
+            </AnchorPane>
             </children>
         </VBox>
     </children>
