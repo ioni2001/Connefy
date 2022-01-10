@@ -40,12 +40,27 @@ public class UserDbRepository implements Repository<Long, User> {
     }
 
     @Override
-    public User findOne(Long aLong) {
-        Iterable<User> users = this.getAllEntities();
-        for(User user:users)
-            if(user.getId().equals(aLong))
+    public User findOne(Long aLong){
+
+        String sql = "SELECT * FROM users WHERE id='" + aLong + "'";
+        User user = null;
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery();) {
+            if(resultSet.next()){
+                String firstName = resultSet.getString(2);
+                String lastName = resultSet.getString(3);
+                String email = resultSet.getString(4);
+                String parola = resultSet.getString(5);
+                user = new User(firstName, lastName, email, parola);
+                user.setId(resultSet.getLong(1));
                 return user;
-        throw new NotExistanceException();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     @Override
@@ -95,12 +110,6 @@ public class UserDbRepository implements Repository<Long, User> {
             throw new EntityNullException();
 
         validator.validate(entity);
-
-        Iterable<User> users = this.getAllEntities();
-        for(User user:users){
-            if(entity.getEmail().equals(user.getEmail()))
-                throw new ExistanceException();
-        }
         String sql = "insert into users (id, firstname, lastname, email, parola , data ) values (?, ?, ?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -122,25 +131,16 @@ public class UserDbRepository implements Repository<Long, User> {
 
     @Override
     public User delete(Long aLong) {
-        Iterable<User> users = this.getAllEntities();
-        User userToDel = null;
-        for(User user : users){
-            if(user.getId().equals(aLong)) {
-                userToDel = user;
-                break;
-            }
-        }
         int idToDel = Integer.parseInt(aLong.toString());
         String sql = "delete from users where id = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, idToDel);
             ps.executeUpdate();
-            return userToDel;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return userToDel;
+        return null;
     }
 
     @Override
@@ -201,6 +201,21 @@ public class UserDbRepository implements Repository<Long, User> {
             e.printStackTrace();
         }
         return user;
+    }
+
+    @Override
+    public Iterable<User> friendshipsOfAnUser(User e) {
+        return null;
+    }
+
+    @Override
+    public void removeFriendship(Long id1, Long id2) {
+
+    }
+
+    @Override
+    public void removeFriendRequest(String email1, String email2) {
+
     }
 
     @Override

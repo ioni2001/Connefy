@@ -11,8 +11,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.RequestsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.RequestsController">
     <children>
         <VBox layoutX="-7.0" layoutY="-6.0" prefHeight="720.0" prefWidth="1000.0">
             <children>
@@ -33,10 +34,13 @@
                     <children>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                             <children>
-                                <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="292.0">
+                                <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="292.0" promptText="Search on connefy">
                                     <HBox.margin>
                                         <Insets left="50.0" />
                                     </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
                                 </TextField>
                             </children>
                         </HBox>
@@ -61,7 +65,7 @@
                               <Insets top="50.0" />
                            </VBox.margin>
                         </Button>
-                        <Button layoutX="80.0" layoutY="154.0" mnemonicParsing="false" onAction="#cancelButt" prefHeight="39.0" prefWidth="138.0" text="Cancel" textFill="#3558c2">
+                        <Button layoutX="80.0" layoutY="154.0" mnemonicParsing="false" onAction="#cancelButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: white;" text="Cancel" textFill="#3558c2">
                            <VBox.margin>
                               <Insets top="50.0" />
                            </VBox.margin>

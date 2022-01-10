@@ -98,11 +98,6 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
 
         validator.validate(entity);
 
-        Iterable<Friendship> friendships = this.getAllEntities();
-        for(Friendship friendship:friendships){
-            if((friendship.getTuple().getLeft().equals(entity.getTuple().getLeft()) && friendship.getTuple().getRight().equals(entity.getTuple().getRight())) ||(friendship.getTuple().getLeft().equals(entity.getTuple().getRight()) && friendship.getTuple().getRight().equals(entity.getTuple().getLeft())))
-                throw new ExistanceException();
-        }
         String sql = "insert into friendships (id, leftv, rightv, datef ) values (?, ?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
@@ -123,14 +118,6 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
 
     @Override
     public Friendship delete(Long aLong) {
-        Iterable<Friendship> friendships = this.getAllEntities();
-        Friendship friendshipToDel = null;
-        for(Friendship friendship:friendships)
-            if(friendship.getId().equals(aLong)){
-                friendshipToDel = friendship;
-                break;
-            }
-
         int idToDel = Integer.parseInt(aLong.toString());
         String sql = "delete from friendships where id = ?";
 
@@ -138,11 +125,11 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, idToDel);
             ps.executeUpdate();
-            return friendshipToDel;
+            return null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return friendshipToDel;
+        return null;
     }
 
     @Override
@@ -179,4 +166,47 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
     public Friendship findOneByParola(String parola) {
         return null;
     }
+
+    @Override
+    public Iterable<Friendship> friendshipsOfAnUser(User user){
+        Set<Friendship> friendshipsList = new HashSet<>();
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement("SELECT * from friendships where leftv = '" + user.getId() + "' or rightv = '" + user.getId() + "'");
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                Long left = resultSet.getLong("leftv");
+                Long right = resultSet.getLong("rightv");
+                String date = resultSet.getString("datef");
+
+                Friendship friendship = new Friendship(new Tuple<>(left, right), date);
+                friendship.setId(id);
+                friendshipsList.add(friendship);
+            }
+            return friendshipsList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return friendshipsList;
+    }
+
+    @Override
+    public void removeFriendship(Long id1, Long id2) {
+        String sql = "delete from friendships where leftv = '"+ id1 +"' and rightv = '"+ id2 +"' or leftv = '"+ id2 +"' and rightv = '"+ id1 +"'";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void removeFriendRequest(String email1, String email2) {
+
+    }
+
+
 }

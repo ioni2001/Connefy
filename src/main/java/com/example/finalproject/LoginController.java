@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Bloom;
 import javafx.scene.effect.Reflection;
@@ -46,7 +47,7 @@ public class LoginController {
     TextField username;
 
     @FXML
-    TextField password;
+    PasswordField password;
 
     @FXML
     Text validate;

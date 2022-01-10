@@ -1,5 +1,6 @@
 package com.example.finalproject.service;
 import java.lang.Long;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Observable;
 
@@ -77,7 +78,12 @@ public class UserService <ID, E extends Entity<ID>> extends Observable implement
     }
 
     public User getUser(Long id){
-        return (User) userRepository.findOne((ID) id);
+        try {
+            return (User) userRepository.findOne((ID) id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public User getUserByEmail(String email){

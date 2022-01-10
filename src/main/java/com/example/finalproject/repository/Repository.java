@@ -5,6 +5,7 @@ import com.example.finalproject.domain.User;
 import com.example.finalproject.domain.validators.ValidationException;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public interface Repository<ID, E extends Entity<ID>> {
      * or null - if there is no entity with the given id
      * @throws IllegalArgumentException if id is null.
      */
-    E findOne(ID id);
+    E findOne(ID id) throws SQLException;
 
     /**
      * @return all entities
@@ -86,5 +87,8 @@ public interface Repository<ID, E extends Entity<ID>> {
     public E findOneByEmail(String email);
 
     E findOneByParola(String parola);
+    public Iterable<E> friendshipsOfAnUser(User e);
+    public void removeFriendship(ID id1, ID id2);
+    public void removeFriendRequest(String email1, String email2);
 }
 
