@@ -1,6 +1,7 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.domain.Entity;
+import com.example.finalproject.domain.User;
 import com.example.finalproject.domain.validators.ValidationException;
 
 public interface Service <ID,E extends Entity<ID>> {
@@ -45,5 +46,4 @@ public interface Service <ID,E extends Entity<ID>> {
     void remove(E e);
 
     void update(E e);
-
 }

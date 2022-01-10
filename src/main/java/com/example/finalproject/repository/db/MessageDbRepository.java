@@ -197,6 +197,22 @@ public class MessageDbRepository implements Repository<Long, Message> {
     }
 
     @Override
+    public Iterable<Message> friendshipsOfAnUser(User e) {
+        return null;
+    }
+
+    @Override
+    public void removeFriendship(Long id1, Long id2) {
+
+    }
+
+    @Override
+    public void removeFriendRequest(String email1, String email2) {
+
+    }
+
+
+    @Override
     public Long getCurrentId() {
         return null;
     }

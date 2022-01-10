@@ -52,15 +52,12 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     public void logIn(String email, String parola){
         ID id;
         boolean ok = false;
-        Iterable<User> entities = (Iterable<User>) userService.getAll();
         HashFunction hashFunction = new HashFunction();
         String parola_hash = hashFunction.getHash(parola,"MD5");
-        for(User user: entities){
-            if(user.getEmail().equals(email) && user.getParola().equals(parola_hash)) {
-                this.userService.setCurrentUserId((ID) user.getId());
-                ok = true;
-                break;
-            }
+        User user = this.findOneByEmail(email);
+        if(user.getParola().equals(parola_hash)){
+            this.userService.setCurrentUserId((ID) user.getId());
+            ok = true;
         }
         if(!ok)
             throw new NotExistanceException();
@@ -76,13 +73,13 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     }
 
     public void removeUser(String email){
-        User userToDel = userService.getUserByEmail(email);
+        User userToDel = userService.findOneByEmail(email);
         friendshipService.removeAll((E2)userToDel);
         userService.remove((E)userToDel);
     }
 
     public void addFriend(String email){
-        User userToAdd = userService.getUserByEmail(email);
+        User userToAdd = userService.findOneByEmail(email);
         ID id = userService.getCurrentId();
         if( (Long) id == -1L)
             throw new LogInException();
@@ -90,8 +87,7 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         friendshipService.add((E2)userToAdd);
     }
 
-    public void removeFriend(String email){
-        User userToDel = userService.getUserByEmail(email);
+    public void removeFriend(User userToDel){
         ID id = userService.getCurrentId();
         if( (Long) id == -1L)
             throw new LogInException();
@@ -101,27 +97,26 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
 
     public List<User> getFriends(User user){
         List<User> friends = new ArrayList<>();
-        Iterable<E2> friendships = friendshipService.getAll();
-        for(E2 friendship:friendships){
-            if(((Friendship)friendship).getTuple().getLeft().equals(user.getId()))
-                friends.add(userService.getUser(((Friendship)friendship).getTuple().getRight()));
+        Iterable<Friendship> friendships = friendshipService.getFriends(user);
+        for(Friendship friendship:friendships) {
+            if (!friendship.getTuple().getLeft().equals(user.getId()))
+                friends.add(this.userService.getUser(friendship.getTuple().getLeft()));
             else
-                if(((Friendship)friendship).getTuple().getRight().equals(user.getId()))
-                    friends.add(userService.getUser(((Friendship)friendship).getTuple().getLeft()));
+                friends.add(this.userService.getUser(friendship.getTuple().getRight()));
         }
         return friends;
     }
 
     public void updateUser(String email, String firstName, String lastName){
-        User user = userService.getUserByEmail(email);
+        User user = userService.findOneByEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         userService.update((E)user);
     }
 
     public void updateFriendship(String email1, String email2){
-        User user1 = userService.getUserByEmail(email1);
-        User user2 = userService.getUserByEmail(email2);
+        User user1 = userService.findOneByEmail(email1);
+        User user2 = userService.findOneByEmail(email2);
         Friendship friendship = new Friendship(new Tuple<>(user1.getId(), user2.getId()), "");
         friendshipService.update((E2)friendship);
     }
@@ -282,18 +277,20 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
 
     public Cerere getReqById(Long id){
         for(Object c: this.getRequests(getCurrentEmail())){
-            if(((Cerere) c).getId() == id){
+            if(((Cerere) c).getId().equals(id)){
                 return (Cerere) c;
             }
         }
         return null;
     }
 
-    public void removeCerere(Long id){
-        if(getReqById(id) != null)
-            requestsService.remove((E4) getReqById(id));
+    public void removeRequestBetweeen(String email1, String email2){
+        requestsService.removeCerere(email1, email2);
     }
 
+    public void removeRequest(Long id){
+        requestsService.remove((E4) getReqById(id));
+    }
     public Iterable<Cerere> getRequests(String email){
         return this.requestsService.getRequestsByEmail(email);
     }

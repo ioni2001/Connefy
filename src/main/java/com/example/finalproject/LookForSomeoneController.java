@@ -5,6 +5,7 @@ import com.example.finalproject.controller.Controller;
 import com.example.finalproject.domain.Cerinte12DTO;
 import com.example.finalproject.domain.Friendship;
 import com.example.finalproject.domain.User;
+import com.example.finalproject.domain.validators.exceptions.ExistanceException;
 import com.example.finalproject.service.Service;
 import com.example.finalproject.service.UserService;
 import javafx.collections.FXCollections;
@@ -36,8 +37,6 @@ public class LookForSomeoneController implements Observer {
     private Controller service;
     private Stage primaryStage;
     ObservableList<User> model = FXCollections.observableArrayList();
-
-
 
     public void setService(Controller service){
         this.service = service;
@@ -97,8 +96,16 @@ public class LookForSomeoneController implements Observer {
                 }
             }
             if(!friendship) {
-                service.addCerere(service.getCurrentEmail(), selected.getEmail(), "pending");
-                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Friend request", "Sent");
+                boolean ok = false;
+                try {
+                    service.addCerere(service.getCurrentEmail(), selected.getEmail(), "pending");
+                    ok = true;
+                }
+                catch(Exception e){
+                    MessageAlert.showErrorMessage(null, e.getMessage());
+                }
+                if(ok)
+                    MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Friend request", "Sent");
             }
         }
         else
