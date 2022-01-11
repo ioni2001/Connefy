@@ -161,4 +161,14 @@ public class UserMemoryRepository<ID, E extends Entity<ID>> implements Repositor
     public void removeFriendRequest(String email1, String email2) {
 
     }
+
+    @Override
+    public List<E> conversation(String email1, String email2) {
+        return null;
+    }
+
+    @Override
+    public Iterable<E> getReqByEmail(String email) {
+        return null;
+    }
 }

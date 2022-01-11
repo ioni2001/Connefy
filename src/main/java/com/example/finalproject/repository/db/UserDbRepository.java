@@ -42,11 +42,12 @@ public class UserDbRepository implements Repository<Long, User> {
     @Override
     public User findOne(Long aLong){
 
-        String sql = "SELECT * FROM users WHERE id='" + aLong + "'";
+        String sql = "SELECT * FROM users WHERE id= ?";
         User user = null;
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery();) {
+             PreparedStatement statement = connection.prepareStatement(sql)){
+             statement.setLong(1, aLong);
+             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
@@ -161,11 +162,12 @@ public class UserDbRepository implements Repository<Long, User> {
 
     @Override
     public User findOneByEmail(String email) {
-        String sql = "SELECT * FROM users WHERE email='" + email + "'";
+        String sql = "SELECT * FROM users WHERE email= ?";
         User user = null;
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery();) {
+             PreparedStatement statement = connection.prepareStatement(sql)){
+             statement.setString(1, email);
+             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
             String firstName = resultSet.getString(2);
             String lastName = resultSet.getString(3);
@@ -183,11 +185,12 @@ public class UserDbRepository implements Repository<Long, User> {
 
     @Override
     public User findOneByParola(String parola) {
-        String sql = "SELECT * FROM users WHERE parola='" + parola + "'";
+        String sql = "SELECT * FROM users WHERE parola= ?";
         User user = null;
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery();) {
+             PreparedStatement statement = connection.prepareStatement(sql)){
+             statement.setString(1, parola);
+             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
@@ -216,6 +219,16 @@ public class UserDbRepository implements Repository<Long, User> {
     @Override
     public void removeFriendRequest(String email1, String email2) {
 
+    }
+
+    @Override
+    public List<User> conversation(String email1, String email2) {
+        return null;
+    }
+
+    @Override
+    public Iterable<User> getReqByEmail(String email) {
+        return null;
     }
 
     @Override

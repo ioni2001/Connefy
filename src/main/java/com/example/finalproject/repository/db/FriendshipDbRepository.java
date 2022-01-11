@@ -171,8 +171,10 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
     public Iterable<Friendship> friendshipsOfAnUser(User user){
         Set<Friendship> friendshipsList = new HashSet<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("SELECT * from friendships where leftv = '" + user.getId() + "' or rightv = '" + user.getId() + "'");
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * from friendships where leftv = ? or rightv = ?")){
+            statement.setLong(1, user.getId());
+            statement.setLong(2, user.getId());
+             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
@@ -193,10 +195,14 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
 
     @Override
     public void removeFriendship(Long id1, Long id2) {
-        String sql = "delete from friendships where leftv = '"+ id1 +"' and rightv = '"+ id2 +"' or leftv = '"+ id2 +"' and rightv = '"+ id1 +"'";
+        String sql = "delete from friendships where leftv = ? and rightv = ? or leftv = ? and rightv = ?";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, id1);
+            ps.setLong(2, id2);
+            ps.setLong(3, id2);
+            ps.setLong(4, id1);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -208,5 +214,14 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
 
     }
 
+    @Override
+    public List<Friendship> conversation(String email1, String email2) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Friendship> getReqByEmail(String email) {
+        return null;
+    }
 
 }
