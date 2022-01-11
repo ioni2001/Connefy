@@ -69,13 +69,7 @@ public class ViewConversationController implements Observer{
     }
 
     private void initModel() {
-        chatPane.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                scrollPane.setVvalue(newValue.doubleValue());
-                }
-            });
-
+        chatPane.setMinHeight(0);
         List<Message> messageList = this.service.viewConversation(this.service.getCurrentEmail(), this.userInConversation.getEmail());
         double layoutY = 10d;
         for(Message message:messageList){
@@ -85,7 +79,6 @@ public class ViewConversationController implements Observer{
                 hasReply = true;
                 replyMessage = new Label("Replied: " + message.getReply().getMessage());
                 replyMessage.setFont(new Font(18));
-                replyMessage.setStyle("-fx-border-radius: 20px; -fx-background-radius: 20px;");
                 replyMessage.setTranslateY(layoutY - 5);
                 replyMessage.setMaxWidth(160);
                 replyMessage.setWrapText(true);
@@ -104,10 +97,10 @@ public class ViewConversationController implements Observer{
                     if (event.getButton().equals(MouseButton.PRIMARY)) {
                         if (event.getClickCount() == 1) {
                             messageToReply = messageLabel;
-                            messageToReply.setStyle("-fx-background-color: #8b7373");
+                            messageToReply.setStyle(messageToReply.getStyle() + "; " + "-fx-background-color: #8b7373");
                         }
                         if(event.getClickCount()== 2){
-                            messageToReply.setStyle("-fx-background-color: #C0C0C0");
+                            messageToReply.setStyle(messageToReply.getStyle() + "; " + "-fx-background-color: #C0C0C0");
                             messageToReply = null;
                         }
                     }
@@ -116,18 +109,12 @@ public class ViewConversationController implements Observer{
 
             Label dateLabel = new Label("Sent on " + message.getDate().format(Constants.DATE_TIME_FORMATTER));
             dateLabel.setFont(new Font(10));
-            dateLabel.setStyle("-fx-border-radius: 20px; -fx-background-radius: 20px;");
-            /*if(messageLabel.isWrapText())
-                dateLabel.setTranslateY(messageLabel.getScaleY() + 40);
-            else {
-                dateLabel.setTranslateY(layoutY + 40);
-            }*/
             dateLabel.setTranslateY(layoutY + 5);
             layoutY += 35;
             if(message.getFrom().getEmail().equals(this.service.getCurrentEmail())){
                 messageLabel.setTranslateX(550);
                 messageLabel.setTextFill(Color.web("#FFFFFF"));
-                messageLabel.setStyle("-fx-background-color: #3558c2");
+                messageLabel.setStyle(messageLabel.getStyle() + "; " + "-fx-background-color: #3558c2");
                 if(hasReply){
                     replyMessage.setTranslateX(535);
                 }
@@ -135,7 +122,7 @@ public class ViewConversationController implements Observer{
             }
             else{
                 messageLabel.setTranslateX(20);
-                messageLabel.setStyle("-fx-background-color: #C0C0C0");
+                messageLabel.setStyle(messageLabel.getStyle() + ";" + "-fx-background-color: #C0C0C0");
                 if(hasReply){
                     replyMessage.setTranslateX(5);
                 }
@@ -143,9 +130,16 @@ public class ViewConversationController implements Observer{
             }
             if(hasReply){
                 chatPane.getChildren().add(replyMessage);
+                chatPane.applyCss();
+                chatPane.layout();
+                chatPane.setMinHeight(chatPane.getMinHeight() + replyMessage.getHeight() + 40);
             }
             chatPane.getChildren().add(messageLabel);
             chatPane.getChildren().add(dateLabel);
+            chatPane.applyCss();
+            chatPane.layout();
+            chatPane.setMinHeight(chatPane.getMinHeight() + messageLabel.getHeight() + 40);
+            chatPane.setMinHeight(chatPane.getMinHeight() + dateLabel.getHeight());
         }
     }
 
@@ -162,7 +156,7 @@ public class ViewConversationController implements Observer{
             this.service.replyAll(Long.parseLong(messageToReply.getId()), message);
         }
 
-        messageToReply.setStyle("-fx-background-color: #C0C0C0");
+        messageToReply.setStyle(messageToReply.getStyle() + "; " + "-fx-background-color: #C0C0C0");
         messageText.setText("");
         messageToReply = null;
     }

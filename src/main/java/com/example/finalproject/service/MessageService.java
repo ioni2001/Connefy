@@ -6,6 +6,7 @@ import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.FriendshipMemoryRepository;
 import com.example.finalproject.utils.Constants;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -53,5 +54,18 @@ public class MessageService  <ID, E extends Entity<ID>> extends Observable imple
     @Override
     public Iterable<E> getAll() {
         return messageRepository.getAllEntities();
+    }
+
+    public Message findOne(ID id){
+        try {
+            return (Message) this.messageRepository.findOne(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Message> conversation(String email1, String email2){
+        return (List<Message>) this.messageRepository.conversation(email1, email2);
     }
 }

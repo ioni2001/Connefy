@@ -174,20 +174,6 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         ID id = userService.getCurrentId();
         if( (Long) id == -1L)
             throw new LogInException();
-
-        Iterable<Friendship> friendships = (Iterable<Friendship>) friendshipService.getAll();
-        for(User user : to) {
-            boolean ok = false;
-            for (Friendship friendship : friendships)
-                if (friendship.getTuple().getRight().equals(user.getId()) && friendship.getTuple().getLeft().equals(userService.getCurrentId()) ||
-                        friendship.getTuple().getLeft().equals(user.getId()) && friendship.getTuple().getRight().equals(userService.getCurrentId())){
-                    ok = true;
-                    break;
-                }
-            if(!ok)
-                throw new ValidationException("Not a friend!");
-        }
-
         Message message = new Message(this.messageService.size() + 1, userService.getUser((Long) userService.getCurrentId()), to, messageStr, null, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
         this.messageService.add((E3) message);
     }
@@ -221,50 +207,22 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     }
 
     public void replyMessage(Long id, String messageStr) {
-        if(id > this.messageService.size() + 1)
-            throw new NotExistanceException();
-        Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
-        Message reply = null;
-        for(Message message : listOfMessages) {
-            if (message.getId().equals(id)) {
-                reply = new Message(this.messageService.size() + 1, userService.getUser((Long) userService.getCurrentId()), Arrays.asList(message.getFrom()), messageStr, message, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
-                break;
-            }
-        }
+        Message message = this.messageService.findOne((ID3) id);
+        Message reply = new Message(this.messageService.size() + 1, userService.getUser((Long) userService.getCurrentId()), Arrays.asList(message.getFrom()), messageStr, message, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
         this.messageService.add((E3) reply);
     }
 
     public void replyAll(Long id, String messageStr) {
-        if(id > this.messageService.size() + 1)
-            throw new NotExistanceException();
-
-        Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
-        Message reply = null;
-        for(Message message : listOfMessages){
-            if(message.getId().equals(id)){
-                List<User> to = new ArrayList<>();
-                for(User user:message.getTo())
-                    if(user.getId() != userService.getCurrentId())
-                        to.add(user);
-                to.add(message.getFrom());
-                reply = new Message(this.messageService.size() + 1, userService.getUser((Long) userService.getCurrentId()), to, messageStr, message, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
-                break;
-            }
-        }
+        Message message = this.messageService.findOne((ID3) id);
+        List<User> to = message.getTo();
+        to.add(message.getFrom());
+        to.remove(this.userService.findOneByEmail(this.getCurrentEmail()));
+        Message reply = new Message(this.messageService.size() + 1, userService.getUser((Long) userService.getCurrentId()), to, messageStr, message, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
         this.messageService.add((E3) reply);
     }
 
     public List<Message> viewConversation(String firstEmail, String secondEmail) {
-        List<Message> listAux = new ArrayList<>();
-        User firstUser = userService.findOneByEmail(firstEmail);
-        User secondUser = userService.findOneByEmail(secondEmail);
-
-        Iterable<Message> listOfMessages = (Iterable<Message>) this.messageService.getAll();
-        for(Message message:listOfMessages) {
-            if(message.getFrom().getEmail().equals(firstUser.getEmail()) && isIn(message.getTo(), secondUser) ||
-               message.getFrom().getEmail().equals(secondUser.getEmail()) && isIn(message.getTo(), firstUser))
-                listAux.add(message);
-        }
+        List<Message> listAux = this.messageService.conversation(firstEmail, secondEmail);
         return listAux.stream().sorted(Comparator
                         .comparing(Message::getDate))
                         .collect(Collectors.toList());

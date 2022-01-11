@@ -46,14 +46,7 @@ public class RequestsService<ID,E extends Entity<ID>> extends Observable impleme
     }
 
     public Iterable<Cerere> getRequestsByEmail(String email){
-        Set<Cerere> cereri = new HashSet<>();
-        Iterable<Cerere> cereres = (Iterable<Cerere>) requestRepo.getAllEntities();
-        for(Cerere c: cereres){
-            if(c.getEmail_recv().equals(email)){
-                cereri.add(c);
-            }
-        }
-        return cereri;
+        return (Iterable<Cerere>) this.requestRepo.getReqByEmail(email);
     }
 
 
