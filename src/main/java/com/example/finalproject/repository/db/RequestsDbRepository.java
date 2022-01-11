@@ -71,10 +71,12 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
     @Override
     public Cerere save(Cerere cerere){
 
-        String sql2 = "SELECT * FROM cereri WHERE email_sender ='" + cerere.getEmail_sender() + "' and email_recv = '" + cerere.getEmail_recv() + "'";
+        String sql2 = "SELECT * FROM cereri WHERE email_sender = ? and email_recv = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql2);
-             ResultSet resultSet = statement.executeQuery();) {
+             PreparedStatement statement = connection.prepareStatement(sql2)){
+             statement.setString(1, cerere.getEmail_sender());
+             statement.setString(2, cerere.getEmail_recv());
+             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                throw new ExistanceException();
             }
@@ -130,10 +132,11 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
 
     @Override
     public Cerere findOne(Long aLong) {
-        String sql = "SELECT * FROM cereri WHERE id='" + aLong + "'";
+        String sql = "SELECT * FROM cereri WHERE id= ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery();) {
+             PreparedStatement statement = connection.prepareStatement(sql)){
+             statement.setLong(1, aLong);
+             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 Long id = resultSet.getLong("id");
                 String status = resultSet.getString("status");
@@ -199,14 +202,48 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
 
     @Override
     public void removeFriendRequest(String email1, String email2) {
-        String sql = "delete from cereri where email_sender = '"+ email1 +"' and email_recv = '"+ email2 +"' or email_sender = '"+ email2 +"' and email_recv = '"+ email1 +"'";
-
+        String sql = "delete from cereri where email_sender = ? and email_recv = ? or email_sender = ? and email_recv = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email1);
+            ps.setString(2, email2);
+            ps.setString(3, email2);
+            ps.setString(4, email1);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Cerere> conversation(String email1, String email2) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Cerere> getReqByEmail(String email) {
+        Set<Cerere> cereri = new HashSet<>();
+        String sql = "SELECT * FROM cereri WHERE email_recv= ?";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                Long id = resultSet.getLong("id");
+                String status = resultSet.getString("status");
+                String email1 = resultSet.getString("email_sender");
+                String email2 = resultSet.getString("email_recv");
+                String data = resultSet.getString("data");
+
+                Cerere c = new Cerere(email1, email2,status,data);
+                c.setId(id);
+                cereri.add(c);
+            }
+            return cereri;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cereri;
     }
 
 }

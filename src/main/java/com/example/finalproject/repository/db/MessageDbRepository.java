@@ -64,11 +64,12 @@ public class MessageDbRepository implements Repository<Long, Message> {
     }
 
     public User getUserFromUsers(String email){
-        String sql = "SELECT * FROM users WHERE email='" + email + "'";
+        String sql = "SELECT * FROM users WHERE email= ?";
         User user = null;
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery();) {
+             PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, email);
+             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
@@ -136,14 +137,12 @@ public class MessageDbRepository implements Repository<Long, Message> {
 
     @Override
     public Message findOne(Long id) {
-        if(id == 0)
-            return null;
-
-        String sql = "SELECT * FROM messages WHERE id='" + id + "'";
+        String sql = "SELECT * FROM messages WHERE id= ?";
         Message message = null;
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery();) {
+             PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setLong(1, id);
+             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 String fromStr = resultSet.getString(2);
                 String toStr = resultSet.getString(3);
@@ -151,7 +150,7 @@ public class MessageDbRepository implements Repository<Long, Message> {
                 String date = resultSet.getString(6);
 
                 User from = this.getUserFromUsers(fromStr);
-                List<String> userEmails = Arrays.asList(toStr.split(" "));
+                List<String> userEmails = Arrays.asList(toStr.split(";"));
                 List<User> usersTo = new ArrayList<>();
                 for(String email: userEmails)
                     usersTo.add(this.getUserFromUsers(email));
@@ -164,6 +163,57 @@ public class MessageDbRepository implements Repository<Long, Message> {
             e.printStackTrace();
         }
         return message;
+    }
+
+    @Override
+    public List<Message> conversation(String email1, String email2) {
+        List<Message> messagesList = new ArrayList<>();
+        String sql = """
+                        SELECT * from messages 
+                        where fromtbl = ? and totbl like ?
+                        or fromtbl = ? and totbl like ?
+                        """;
+
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)){
+             statement.setString(1, email1);
+             statement.setString(2, "%" + email2 + "%");
+             statement.setString(3, email2);
+             statement.setString(4, "%" + email1 + "%");
+             ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String fromStr = resultSet.getString("fromtbl");
+                String toStr = resultSet.getString("totbl");
+                String messageStr = resultSet.getString("messagetbl");
+                Long replyID = resultSet.getLong("reply");
+                String date = resultSet.getString("datetbl");
+
+                User from = this.getUserFromUsers(fromStr);
+                if(from != null) {
+
+                    List<String> toSplit = Arrays.asList(toStr.split(";"));
+                    List<User> to = new ArrayList<>();
+                    for (String email : toSplit) {
+                        if(this.getUserFromUsers(email) != null)
+                            to.add(this.getUserFromUsers(email));
+                    }
+
+                    Message reply = this.findOne(replyID);
+                    Message message = new Message(id, from, to, messageStr, reply, date);
+                    messagesList.add(message);
+                }
+            }
+            return messagesList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return messagesList;
+    }
+
+    @Override
+    public Iterable<Message> getReqByEmail(String email) {
+        return null;
     }
 
     @Override
@@ -210,7 +260,6 @@ public class MessageDbRepository implements Repository<Long, Message> {
     public void removeFriendRequest(String email1, String email2) {
 
     }
-
 
     @Override
     public Long getCurrentId() {

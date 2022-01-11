@@ -1,6 +1,7 @@
 package com.example.finalproject.repository;
 
 import com.example.finalproject.domain.Entity;
+import com.example.finalproject.domain.Message;
 import com.example.finalproject.domain.User;
 import com.example.finalproject.domain.validators.ValidationException;
 
@@ -90,5 +91,7 @@ public interface Repository<ID, E extends Entity<ID>> {
     public Iterable<E> friendshipsOfAnUser(User e);
     public void removeFriendship(ID id1, ID id2);
     public void removeFriendRequest(String email1, String email2);
+    public List<E> conversation(String email1, String email2);
+    public Iterable<E> getReqByEmail(String email);
 }
 

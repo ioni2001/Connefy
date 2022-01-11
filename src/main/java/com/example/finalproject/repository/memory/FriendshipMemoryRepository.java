@@ -140,6 +140,16 @@ public class FriendshipMemoryRepository<ID, E extends Entity<ID>> implements Rep
 
     }
 
+    @Override
+    public List<E> conversation(String email1, String email2) {
+        return null;
+    }
+
+    @Override
+    public Iterable<E> getReqByEmail(String email) {
+        return null;
+    }
+
 
     /**
      * Clears the container where the entities are stored

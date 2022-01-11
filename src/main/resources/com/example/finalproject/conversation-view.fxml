@@ -20,41 +20,41 @@
                         <Insets left="10.0" top="20.0" />
                     </VBox.margin>
                 </Button>
-            <AnchorPane>
-               <children>
-                  <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" layoutX="248.0" layoutY="37.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="541.0" prefWidth="726.0" vbarPolicy="ALWAYS">
-                     <content>
-                        <VBox fx:id="chatPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="541.0" prefWidth="726.0" />
-                     </content>
-                  </ScrollPane>
-                  <Label fx:id="conversationWithLbl" layoutX="19.0" layoutY="202.0" prefHeight="54.0" prefWidth="224.0" text="Label" textFill="WHITE">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Text fill="WHITE" layoutX="14.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="In conversation with:" wrappingWidth="223.9999999999999">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Text>
-               </children>
-            </AnchorPane>
-            <AnchorPane>
-               <children>
-                  <TextField fx:id="messageText" layoutX="273.0" prefHeight="54.0" prefWidth="600.0" promptText="Type your message..." style="-fx-background-color: white;">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </TextField>
-                  <Button layoutX="892.0" layoutY="3.0" mnemonicParsing="false" onAction="#handleSendBtn" prefHeight="32.0" prefWidth="79.0" style="-fx-background-color: white;" text="Send" textFill="#3558c2" />
-                  <CheckBox fx:id="replyAllBtn" layoutX="185.0" layoutY="17.0" mnemonicParsing="false" text="Reply All">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </CheckBox>
-                  <Button layoutX="893.0" layoutY="42.0" mnemonicParsing="false" onAction="#handleReplyBtn" prefHeight="32.0" prefWidth="79.0" style="-fx-background-color: white;" text="Reply" textFill="#3558c2" />
-               </children>
-            </AnchorPane>
+                <AnchorPane>
+                    <children>
+                        <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" layoutX="248.0" layoutY="37.0" prefHeight="541.0" prefWidth="726.0" vbarPolicy="ALWAYS">
+                            <content>
+                                <VBox fx:id="chatPane" minHeight="541.0" prefHeight="541.0" prefWidth="726.0" />
+                            </content>
+                        </ScrollPane>
+                        <Label fx:id="conversationWithLbl" layoutX="19.0" layoutY="202.0" prefHeight="54.0" prefWidth="224.0" text="Label" textFill="WHITE">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Label>
+                        <Text fill="WHITE" layoutX="14.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="In conversation with:" wrappingWidth="223.9999999999999">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Text>
+                    </children>
+                </AnchorPane>
+                <AnchorPane>
+                    <children>
+                        <TextField fx:id="messageText" layoutX="273.0" prefHeight="54.0" prefWidth="600.0" promptText="Type your message..." style="-fx-background-color: white;">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </TextField>
+                        <Button layoutX="892.0" layoutY="3.0" mnemonicParsing="false" onAction="#handleSendBtn" prefHeight="32.0" prefWidth="79.0" style="-fx-background-color: white;" text="Send" textFill="#3558c2" />
+                        <CheckBox fx:id="replyAllBtn" layoutX="185.0" layoutY="17.0" mnemonicParsing="false" text="Reply All">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </CheckBox>
+                        <Button layoutX="893.0" layoutY="42.0" mnemonicParsing="false" onAction="#handleReplyBtn" prefHeight="32.0" prefWidth="79.0" style="-fx-background-color: white;" text="Reply" textFill="#3558c2" />
+                    </children>
+                </AnchorPane>
             </children>
         </VBox>
     </children>
