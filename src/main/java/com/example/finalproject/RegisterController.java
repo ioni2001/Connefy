@@ -75,7 +75,7 @@ public class RegisterController {
     }
 
     @FXML
-    public void onReg() throws IOException {
+    public void onReg() throws InterruptedException {
         try {
             controller.addUser(nume.getText(), prenume.getText(), email.getText(), password.getText());
             panou.setVisible(false);
@@ -97,10 +97,16 @@ public class RegisterController {
             panou.setVisible(false);
             inregistrat.setVisible(true);
             inregistrat.setText("Cont invalid sau existent !");
+            //Thread.sleep(3000);
             MessageAlert.showErrorMessage(null, "Cont invalid sau existent !");
 
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("registerNow.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            Scene scene = null;
+            try {
+                scene = new Scene(fxmlLoader.load());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
             primaryStage.setTitle("Connefy");
             primaryStage.setScene(scene);

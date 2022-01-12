@@ -6,8 +6,11 @@ import com.example.finalproject.domain.Cerinte12DTO;
 import com.example.finalproject.domain.Friendship;
 import com.example.finalproject.domain.User;
 import com.example.finalproject.domain.validators.exceptions.ExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageableImpl;
 import com.example.finalproject.service.Service;
 import com.example.finalproject.service.UserService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,10 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
@@ -48,6 +48,9 @@ public class LookForSomeoneController implements Observer {
         this.primaryStage = primaryStage;
     }
 
+    private Page<User> firstLoadedUsersPage;
+    private Page<User> secondLoadedUsersPage;
+
     @FXML
     private TableColumn<User, String> emailColumn;
 
@@ -70,18 +73,50 @@ public class LookForSomeoneController implements Observer {
         emailColumn.setCellValueFactory(new PropertyValueFactory<User, String>("email"));
         usersTable.setItems(model);
         searchBar.textProperty().addListener(o->handleFilter());
+        addUsersTableScrollbarListener();
     }
 
     private void initModel() {
-        Iterable<User> users = service.getAllUsers();
-        List<User> allUsers = new ArrayList<>();
-        users.forEach(allUsers::add);
-        List<User> usersList = allUsers.stream().filter(x -> !x.getEmail().equals(service.getCurrentEmail())).collect(Collectors.toList());
-
-        model.setAll(usersList);
+        initUsers();
     }
 
+    private void addUsersTableScrollbarListener() {
+        Platform.runLater(() -> {
+            ScrollBar tvScrollBar = (ScrollBar) usersTable.lookup(".scroll-bar:vertical");
+            tvScrollBar.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if ((Double) newValue == 0.0) {
+                    if (firstLoadedUsersPage.getPageable().getPageNumb() > 1) {
+                        secondLoadedUsersPage = firstLoadedUsersPage;
+                        firstLoadedUsersPage = service.getAllUsers(firstLoadedUsersPage.previousPageable());
+                        setUserModel();
+                    }
+                } else if ((Double) newValue == 1.0) {
+                    if (secondLoadedUsersPage.getContent().size() == secondLoadedUsersPage.getPageable().getPageSize()) {
+                        Page<User> newUsers = service.getAllUsers(secondLoadedUsersPage.nextPageable());
 
+                        if (!newUsers.getContent().isEmpty()) {
+                            firstLoadedUsersPage = secondLoadedUsersPage;
+                            secondLoadedUsersPage = newUsers;
+                            setUserModel();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    private void initUsers(){
+        firstLoadedUsersPage = service.getAllUsers(new PageableImpl<>(1, 4));
+        secondLoadedUsersPage = service.getAllUsers(new PageableImpl<>(2, 4));
+        setUserModel();
+    }
+
+    private void setUserModel(){
+        List<User> users = firstLoadedUsersPage.getContent();
+        users.addAll(secondLoadedUsersPage.getContent());
+        users.removeIf(user -> user.getEmail().equals(service.getCurrentEmail()));
+        model.setAll(users);
+    }
     @FXML
     void handleAddFriendBtn(ActionEvent event) {
         User selected =usersTable.getSelectionModel().getSelectedItem();

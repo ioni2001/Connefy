@@ -1,13 +1,12 @@
 package com.example.finalproject.repository.db;
 
-import com.example.finalproject.domain.Entity;
-import com.example.finalproject.domain.Friendship;
-import com.example.finalproject.domain.Tuple;
-import com.example.finalproject.domain.User;
+import com.example.finalproject.domain.*;
 import com.example.finalproject.domain.validators.Validator;
 import com.example.finalproject.domain.validators.exceptions.EntityNullException;
 import com.example.finalproject.domain.validators.exceptions.ExistanceException;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.FriendshipMemoryRepository;
 
@@ -224,4 +223,23 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
         return null;
     }
 
+    @Override
+    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
+        return null;
+    }
+
+    @Override
+    public Page<Message> conversation(Pageable<Message> pageable, String email1, String email2) {
+        return null;
+    }
+
+    @Override
+    public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        return null;
+    }
+
+    @Override
+    public Page<User> getAllEntities(Pageable<User> pageable) {
+        return null;
+    }
 }

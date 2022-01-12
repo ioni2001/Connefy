@@ -1,11 +1,14 @@
 package com.example.finalproject.repository.db;
 
-import com.example.finalproject.domain.Entity;
-import com.example.finalproject.domain.User;
+import com.example.finalproject.domain.*;
 import com.example.finalproject.domain.validators.Validator;
 import com.example.finalproject.domain.validators.exceptions.EntityNullException;
 import com.example.finalproject.domain.validators.exceptions.ExistanceException;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageImpl;
+import com.example.finalproject.paging.Pageable;
+import com.example.finalproject.paging.UserPgRepository;
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.UserMemoryRepository;
 import com.example.finalproject.utils.HashFunction;
@@ -13,7 +16,7 @@ import com.example.finalproject.utils.HashFunction;
 import java.sql.*;
 import java.util.*;
 
-public class UserDbRepository implements Repository<Long, User> {
+public class UserDbRepository implements Repository<Long, User>, UserPgRepository {
     private String url;
     private String username;
     private String password;
@@ -111,7 +114,7 @@ public class UserDbRepository implements Repository<Long, User> {
             throw new EntityNullException();
 
         validator.validate(entity);
-        String sql = "insert into users (id, firstname, lastname, email, parola , data ) values (?, ?, ?, ?, ?, ?)";
+        String sql = "insert into users (id, firstname, lastname, email, parola ) values (?, ?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -245,5 +248,49 @@ public class UserDbRepository implements Repository<Long, User> {
         for(User user:users)
             rez.add(user.getId());
         return rez;
+    }
+
+    @Override
+    public Page<User> getAllEntities(Pageable<User> pageable) {
+        List<User> usersList = new ArrayList<>();
+        String sql = """
+                SELECT * FROM users
+                LIMIT ( ? ) OFFSET ( ? )
+                """;
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)){
+             statement.setLong(1, pageable.getPageSize());
+             statement.setLong(2, (long) pageable.getPageSize()*(pageable.getPageNumb()-1));
+             ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String firstName = resultSet.getString("firstname");
+                String lastName = resultSet.getString("lastname");
+                String email = resultSet.getString("email");
+                String parola = resultSet.getString("parola");
+
+                User user = new User(firstName, lastName, email,parola);
+                user.setId(id);
+                usersList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new PageImpl<>(pageable, usersList);
+    }
+
+    @Override
+    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
+        return null;
+    }
+
+    @Override
+    public Page<Message> conversation(Pageable<Message> pageable, String email1, String email2) {
+        return null;
+    }
+
+    @Override
+    public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        return null;
     }
 }
