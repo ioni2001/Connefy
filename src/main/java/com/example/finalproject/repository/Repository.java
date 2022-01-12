@@ -4,6 +4,10 @@ import com.example.finalproject.domain.Entity;
 import com.example.finalproject.domain.Message;
 import com.example.finalproject.domain.User;
 import com.example.finalproject.domain.validators.ValidationException;
+import com.example.finalproject.paging.FriendshipsPgRepository;
+import com.example.finalproject.paging.MessagePgRepository;
+import com.example.finalproject.paging.RequestsPgRepository;
+import com.example.finalproject.paging.UserPgRepository;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,7 +19,7 @@ import java.util.List;
  * @param <E> -  type of entities saved in repository
  */
 
-public interface Repository<ID, E extends Entity<ID>> {
+public interface Repository<ID, E extends Entity<ID>> extends UserPgRepository, MessagePgRepository, FriendshipsPgRepository, RequestsPgRepository {
 
     /**
      * @return the number of entities

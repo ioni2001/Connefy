@@ -3,6 +3,8 @@ package com.example.finalproject.service;
 import com.example.finalproject.domain.Cerere;
 import com.example.finalproject.domain.Entity;
 import com.example.finalproject.domain.Friendship;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.repository.Repository;
 
 import java.util.HashSet;
@@ -76,6 +78,10 @@ public class RequestsService<ID,E extends Entity<ID>> extends Observable impleme
         this.requestRepo.update(entity);
         setChanged();
         notifyObservers(Cerere.class);
+    }
+
+    public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email){
+        return this.requestRepo.getReqByName(pageable,email);
     }
 
     public void removeCerere(String email1, String email2){

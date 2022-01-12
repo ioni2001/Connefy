@@ -5,6 +5,8 @@ import com.example.finalproject.domain.validators.UserValidator;
 import com.example.finalproject.domain.validators.ValidationException;
 import com.example.finalproject.domain.validators.exceptions.LogInException;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.service.FriendshipService;
 import com.example.finalproject.service.MessageService;
 import com.example.finalproject.service.RequestsService;
@@ -249,6 +251,7 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     public void removeRequest(Long id){
         requestsService.remove((E4) getReqById(id));
     }
+
     public Iterable<Cerere> getRequests(String email){
         return this.requestsService.getRequestsByEmail(email);
     }
@@ -262,5 +265,12 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         messageService.addObserver(obj);
         requestsService.addObserver(obj);
         userService.addObserver(obj);
+    }
+
+    public Page<User> getAllUsers(Pageable<User> pageable){
+        return this.userService.getAllEntities(pageable);
+    }
+    public Page<Cerere> getRequests(Pageable<Cerere> pageable,String email){
+        return this.requestsService.getReqByName(pageable,email);
     }
 }
