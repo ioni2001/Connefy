@@ -4,9 +4,11 @@ import com.example.finalproject.controller.Controller;
 import com.example.finalproject.domain.Cerere;
 import com.example.finalproject.domain.User;
 //import com.sun.javafx.collections.ElementObservableListDecorator;
-import com.example.finalproject.domain.validators.FriendshipValidator;
 import com.example.finalproject.domain.validators.ValidationException;
 import com.example.finalproject.domain.validators.exceptions.ExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageableImpl;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -51,6 +53,10 @@ public class RequestsController implements Observer {
     @FXML
     private TableColumn<Cerere, String> date;
 
+    private Page<Cerere> firstLoadedCererePage;
+    private Page<Cerere> secondLoadedCererePage;
+
+
     @FXML
     private Button accept;
 
@@ -67,6 +73,7 @@ public class RequestsController implements Observer {
         from.setCellValueFactory(new PropertyValueFactory<Cerere, String>("email_sender"));
         cereri.setItems(model);
         searchBar.textProperty().addListener(o->handleFilter());
+        addReqsTableScrollbarListener();
     }
 
 
@@ -102,13 +109,45 @@ public class RequestsController implements Observer {
         mainController.setStage(primaryStage);
     }
 
-    private void initModel() {
-        Iterable<Cerere> cerereIterable = service.getRequests(service.getCurrentEmail());
-        List<Cerere> cereri = new ArrayList<>();
-        cerereIterable.forEach(cereri::add);
-        List<Cerere> cerereList = cereri.stream().filter(x -> x.getEmail_recv().equals(service.getCurrentEmail())).collect(Collectors.toList());
+    private void addReqsTableScrollbarListener() {
+        Platform.runLater(() -> {
+            ScrollBar tvScrollBar = (ScrollBar) cereri.lookup(".scroll-bar:vertical");
+            tvScrollBar.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if ((Double) newValue == 0.0) {
+                    if (firstLoadedCererePage.getPageable().getPageNumb() > 1) {
+                        secondLoadedCererePage = firstLoadedCererePage;
+                        firstLoadedCererePage = service.getRequests(firstLoadedCererePage.previousPageable(),service.getCurrentEmail());
+                        setReqsModel();
+                    }
+                } else if ((Double) newValue == 1.0) {
+                    if (secondLoadedCererePage.getContent().size() == secondLoadedCererePage.getPageable().getPageSize()) {
+                        Page<Cerere> newReqs = service.getRequests(secondLoadedCererePage.nextPageable(), service.getCurrentEmail());
 
-        model.setAll(cerereList);
+                        if (!newReqs.getContent().isEmpty()) {
+                            firstLoadedCererePage = secondLoadedCererePage;
+                            secondLoadedCererePage = newReqs;
+                            setReqsModel();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    private void initReqs(){
+        firstLoadedCererePage = service.getRequests(new PageableImpl<>(1, 4),service.getCurrentEmail());
+        secondLoadedCererePage = service.getRequests(new PageableImpl<>(2, 4),service.getCurrentEmail());
+        setReqsModel();
+    }
+
+    private void setReqsModel(){
+        List<Cerere> cereri = firstLoadedCererePage.getContent();
+        cereri.addAll(secondLoadedCererePage.getContent());
+        model.setAll(cereri);
+    }
+
+    private void initModel() {
+        initReqs();
     }
 
     private void handleFilter() {

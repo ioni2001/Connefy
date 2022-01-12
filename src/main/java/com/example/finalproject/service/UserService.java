@@ -8,6 +8,8 @@ import com.example.finalproject.domain.*;
 import com.example.finalproject.domain.validators.ValidationException;
 import com.example.finalproject.domain.validators.exceptions.ExistanceException;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.UserMemoryRepository;
 
@@ -68,6 +70,10 @@ public class UserService <ID, E extends Entity<ID>> extends Observable implement
 
     public List<Long> getAllIDs(){
         return userRepository.getAllIDs();
+    }
+
+    public Page<User> getAllEntities(Pageable<User> pageable){
+        return this.userRepository.getAllEntities(pageable);
     }
 
     @Override

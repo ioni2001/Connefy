@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.RequestsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.RequestsController">
     <children>
         <VBox layoutX="-7.0" layoutY="-6.0" prefHeight="720.0" prefWidth="1000.0">
             <children>
@@ -44,7 +44,7 @@
                                 </TextField>
                             </children>
                         </HBox>
-                        <TableView fx:id="cereri" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="243.0" prefWidth="678.0" GridPane.rowIndex="1">
+                        <TableView fx:id="cereri" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="678.0" GridPane.rowIndex="1">
                             <columns>
                                 <TableColumn fx:id="from" prefWidth="222.0" text="From" />
                                 <TableColumn fx:id="status" prefWidth="246.0" text="Status" />

@@ -1,12 +1,18 @@
 package com.example.finalproject.repository.db;
 
 import com.example.finalproject.domain.Cerere;
+import com.example.finalproject.domain.Friendship;
+import com.example.finalproject.domain.Message;
 import com.example.finalproject.domain.User;
 import com.example.finalproject.domain.validators.Validator;
 import com.example.finalproject.domain.validators.exceptions.ExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageImpl;
+import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.repository.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -246,4 +252,45 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
         return cereri;
     }
 
+    @Override
+    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
+        return null;
+    }
+
+    @Override
+    public Page<Message> conversation(Pageable<Message> pageable, String email1, String email2) {
+        return null;
+    }
+
+    @Override
+    public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        List<Cerere> cereri = new ArrayList<>();
+        String sql = "SELECT * FROM cereri WHERE email_recv= ? LIMIT (?) OFFSET (?)";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, email);
+            statement.setLong(2, pageable.getPageSize());
+            statement.setLong(3, pageable.getPageSize()*(pageable.getPageNumb()-1));
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                Long id = resultSet.getLong("id");
+                String status = resultSet.getString("status");
+                String email1 = resultSet.getString("email_sender");
+                String email2 = resultSet.getString("email_recv");
+                String data = resultSet.getString("data");
+
+                Cerere c = new Cerere(email1, email2,status,data);
+                c.setId(id);
+                cereri.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new PageImpl<>(pageable,cereri);
+    }
+
+    @Override
+    public Page<User> getAllEntities(Pageable<User> pageable) {
+        return null;
+    }
 }

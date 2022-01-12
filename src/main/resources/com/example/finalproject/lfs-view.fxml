@@ -48,7 +48,7 @@
                         </Button>
                      </children>
                   </HBox>
-                  <TableView fx:id="usersTable" prefHeight="242.0" prefWidth="742.0" GridPane.rowIndex="1">
+                  <TableView fx:id="usersTable" maxHeight="-Infinity" prefHeight="130.0" prefWidth="742.0" GridPane.rowIndex="1">
                      <columns>
                         <TableColumn fx:id="firstNameColumn" prefWidth="337.6000213623047" text="First Name" />
                         <TableColumn fx:id="lastNameColumn" prefWidth="344.0" text="Last Name" />
