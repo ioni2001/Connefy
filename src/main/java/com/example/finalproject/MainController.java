@@ -91,4 +91,17 @@ public class MainController {
         messangerController.setService(service);
         messangerController.setStage(primaryStage);
     }
+
+    @FXML
+    void handleStatisticsButton(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("statistics-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        StatisticsController statisticsController = fxmlLoader.getController();
+        statisticsController.setService(service);
+        statisticsController.setStage(primaryStage);
+    }
 }

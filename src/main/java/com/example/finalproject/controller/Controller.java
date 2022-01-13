@@ -13,7 +13,13 @@ import com.example.finalproject.service.RequestsService;
 import com.example.finalproject.service.UserService;
 import com.example.finalproject.utils.Constants;
 import com.example.finalproject.utils.HashFunction;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -194,7 +200,9 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         for(Message message : listOfMessages)
             if (isIn(message.getTo(), user))
                 listAux.add(message);
-        return listAux;
+        return listAux.stream().sorted(Comparator
+                        .comparing(Message::getDate))
+                .collect(Collectors.toList());
     }
 
     public List<Message> getMessagesFromGroup() {
@@ -272,5 +280,121 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     }
     public Page<Cerere> getRequests(Pageable<Cerere> pageable,String email){
         return this.requestsService.getReqByName(pageable,email);
+    }
+
+    public void saveConversation(String loggedUserEmail, String friendEmail, Timestamp start, Timestamp end) throws IOException {
+        List<Message> messagesAux = this.viewConversation(loggedUserEmail, friendEmail);
+        List<Message> messages = new ArrayList<>();
+
+        int size = 0;
+        for(Message message:messagesAux) {
+            if(!message.getFrom().getEmail().equals(loggedUserEmail) && message.getDate().isAfter(start.toLocalDateTime()) && message.getDate().isBefore(end.toLocalDateTime())){
+                messages.add(message);
+                size++;
+            }
+        }
+
+        StringBuilder body = new StringBuilder();
+        if(size == 0){
+            body.append("You have no messages received from your friend in the time period selected!");
+        }
+        else {
+            body.append("You have ").append(size).append(" messages received from your friend in the time period selected!").append("\n\n");
+
+            User friend = this.findOneByEmail(friendEmail);
+            for (Message message : messages) {
+                body.append("New message from: ").append(friend.getFirstName()).append(" ").append(friend.getLastName()).append("\nMessage: \n\"").append(message.getMessage())
+                        .append("\"\n").append("Time: ").append(message.getDate().format(Constants.DATE_TIME_FORMATTER)).append("\n\n");
+            }
+        }
+            saveTextToPdf(body.toString());
+    }
+
+    public void saveGeneralReport(String loggedUserEmail, Timestamp start, Timestamp end) throws IOException{
+        List<Message> messagesAux = this.userMessages();
+        List<Message> messages = new ArrayList<>();
+
+        int size = 0;
+        for(Message message:messagesAux) {
+            if(!message.getFrom().getEmail().equals(loggedUserEmail) && message.getDate().isAfter(start.toLocalDateTime()) && message.getDate().isBefore(end.toLocalDateTime())){
+                messages.add(message);
+                size++;
+            }
+        }
+        StringBuilder body = new StringBuilder();
+        if(size == 0){
+            body.append("You have no messages received in the time period selected!");
+        }
+        else {
+            body.append("You have ").append(size).append(" messages received in the time period selected!").append("\n\n");
+
+            for (Message message : messages) {
+                body.append("New message from: ").append(message.getFrom().getFirstName()).append(" ").append(message.getFrom().getLastName()).append("\nMessage: \n\"").append(message.getMessage())
+                        .append("\"\n").append("Time: ").append(message.getDate().format(Constants.DATE_TIME_FORMATTER)).append("\n\n");
+            }
+        }
+
+        size = 0;
+        Iterable<Friendship> friendshipsAux = this.friendshipService.getFriends(this.findOneByEmail(this.getCurrentEmail()));
+        List<Friendship> friendships = new ArrayList<>();
+        for(Friendship friendship:friendshipsAux){
+            if(LocalDateTime.parse(friendship.getDate(), Constants.DATE_TIME_FORMATTER).isAfter(start.toLocalDateTime()) && LocalDateTime.parse(friendship.getDate(), Constants.DATE_TIME_FORMATTER).isBefore(end.toLocalDateTime())){
+                size++;
+                friendships.add(friendship);
+            }
+        }
+        if(size == 0){
+            body.append("You have no new friendships made in the time period selected!");
+        }
+        else {
+            body.append("You have ").append(size).append(" new friendships made in the time period selected!").append("\n\n");
+
+            for(Friendship friendship:friendships){
+                if(friendship.getTuple().getLeft().equals(this.userService.getCurrentId()))
+                    body.append("You became friend with ").append(this.userService.getUser(friendship.getTuple().getRight()).getFirstName()).append(" ").append(this.userService.getUser(friendship.getTuple().getRight()).getLastName()).append(" on ").append(friendship.getDate()).append("\n");
+                else
+                    body.append("You became friend with ").append(this.userService.getUser(friendship.getTuple().getLeft()).getFirstName()).append(" ").append(this.userService.getUser(friendship.getTuple().getLeft()).getLastName()).append(" on ").append(friendship.getDate()).append("\n");
+            }
+        }
+        saveTextToPdf(body.toString());
+    }
+
+    private void saveTextToPdf(String text) throws IOException {
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage();
+        document.addPage(page);
+
+        PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+        contentStream.setFont(PDType1Font.TIMES_BOLD, 20);
+        contentStream.beginText();
+        contentStream.newLineAtOffset(25, 700);
+        contentStream.setLeading(14.5f);
+        List<String> chunks = List.of(text.split("\n"));
+
+        for (int index = 0, availableRows = 25; index < chunks.size(); ++index, --availableRows) {
+            if (availableRows == 0) {
+                availableRows = 25;
+                contentStream.endText();
+                contentStream.close();
+                page = new PDPage();
+                document.addPage(page);
+                contentStream = new PDPageContentStream(document, page);
+                contentStream.setFont(PDType1Font.TIMES_BOLD, 20);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(25, 700);
+                contentStream.setLeading(14.5f);
+            }
+
+            contentStream.showText(chunks.get(index));
+            contentStream.newLine();
+            contentStream.newLine();
+        }
+
+        contentStream.endText();
+        contentStream.close();
+
+        document.save("E:/PDFExport/reports.pdf");
+        document.close();
     }
 }
