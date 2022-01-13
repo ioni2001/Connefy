@@ -107,6 +107,88 @@ public class MyFriendsController implements Observer {
         model.setAll(users);
     }
 
+    @FXML
+    public void handleLogOutButton() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("loginView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        LoginController loginController = fxmlLoader.getController();
+        loginController.setController(service);
+        loginController.setStage(primaryStage);
+    }
+
+    public void home() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        MainController mainController = fxmlLoader.getController();
+        mainController.setService(service);
+        mainController.setStage(primaryStage);
+    }
+
+    @FXML
+    public void handleMyFriendsButton(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("myfriends-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("My friends");
+        primaryStage.setScene(scene);
+        MyFriendsController myFriendsController = fxmlLoader.getController();
+        myFriendsController.setService(service);
+        myFriendsController.setStage(primaryStage);
+    }
+
+    @FXML
+    public void handleRequestsButton(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("requests_view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        RequestsController requestsController = fxmlLoader.getController();
+        requestsController.setService(service);
+        requestsController.setStage(primaryStage);
+    }
+
+    @FXML
+    public void handleMessangerButton(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("messanger-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        MessengerController messangerController = fxmlLoader.getController();
+        messangerController.setService(service);
+        messangerController.setStage(primaryStage);
+    }
+
+    @FXML
+    public void chatImg() throws IOException {
+        User selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("conversation-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            primaryStage.setTitle("Connefy");
+            primaryStage.setScene(scene);
+
+            ViewConversationController viewConversationController = fxmlLoader.getController();
+            viewConversationController.setUserInConversation(selected);
+            viewConversationController.setService(service);
+            viewConversationController.setStage(primaryStage);
+        } else {
+            MessageAlert.showErrorMessage(null, "Must select an user!");
+        }
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         initModel();

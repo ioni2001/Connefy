@@ -1,55 +1,230 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.MainController">
-    <children>
-        <Pane layoutX="512.0" layoutY="142.0" prefHeight="458.0" prefWidth="474.0">
-            <children>
-                <Button layoutX="167.0" layoutY="25.0" mnemonicParsing="false" onAction="#handleLFSButton" prefHeight="58.0" prefWidth="140.0" style="-fx-background-color: white;" text="Look for someone" textFill="#3558c2" />
-                <Text fx:id="validate" fill="WHITE" layoutX="189.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="96.0">
-                    <font>
-                        <Font size="18.0" />
-                    </font>
-                </Text>
-                <Button layoutX="167.0" layoutY="129.0" mnemonicParsing="false" onAction="#handleMyFriendsButton" prefHeight="58.0" prefWidth="140.0" style="-fx-background-color: white;" text="My friends" textAlignment="CENTER" textFill="#3558c2" />
-            <Button fx:id="butReq" layoutX="167.0" layoutY="229.0" mnemonicParsing="false" onAction="#handleRequestsButton" prefHeight="58.0" prefWidth="140.0" style="-fx-background-color: white;" text="Friend Requests" textFill="#3558c2" />
-            <Button layoutX="167.0" layoutY="333.0" mnemonicParsing="false" onAction="#handleMessangerButton" prefHeight="58.0" prefWidth="140.0" style="-fx-background-color: white;" text="Messenger" textFill="#3558c2" />
-            </children>
-        </Pane>
-      <HBox layoutX="-1.0" layoutY="-2.0" prefHeight="414.0" prefWidth="466.0">
-         <children>
-            <VBox prefHeight="414.0" prefWidth="466.0">
+   <stylesheets>
+      <URL value="@table.css" />
+   </stylesheets>
+   <children>
+      <BorderPane prefHeight="720.0" prefWidth="1024.0">
+         <top>
+            <GridPane prefHeight="64.0" prefWidth="1000.0" style="-fx-background-color: #072a90;" BorderPane.alignment="CENTER">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="495.0" minWidth="10.0" prefWidth="305.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="695.0" minWidth="10.0" prefWidth="695.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
                <children>
-                  <Text fill="#fcfcfc" strokeType="OUTSIDE" strokeWidth="0.0" text="User Logged In:">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="20.0" top="50.0" />
-                     </VBox.margin>
-                  </Text>
-                  <Label fx:id="userLoggedInLbl" prefHeight="38.0" prefWidth="273.0" text="Label" textFill="#faf5f5">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="20.0" top="20.0" />
-                     </VBox.margin>
-                  </Label>
+                  <HBox alignment="CENTER" focusTraversable="true" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #072a90;" GridPane.columnIndex="1">
+                     <children>
+                        <ImageView fitHeight="39.0" fitWidth="41.0" onMouseClicked="#home" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@home.jpg" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="30.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Button contentDisplay="CENTER" graphicTextGap="6.0" layoutX="299.0" layoutY="19.0" mnemonicParsing="false" onAction="#handleMyFriendsButton" prefHeight="40.0" prefWidth="117.0" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Friends" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                           <font>
+                              <Font name="Gadugi" size="22.0" />
+                           </font>
+                        </Button>
+                        <Button contentDisplay="CENTER" graphicTextGap="6.0" layoutX="358.0" layoutY="19.0" mnemonicParsing="false" onAction="#handleRequestsButton" prefHeight="40.0" prefWidth="117.0" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Requests" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                           <font>
+                              <Font name="Gadugi" size="22.0" />
+                           </font>
+                        </Button>
+                        <Button contentDisplay="CENTER" graphicTextGap="6.0" layoutX="416.0" layoutY="19.0" mnemonicParsing="false" onAction="#handleMessangerButton" prefHeight="40.0" prefWidth="117.0" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Chat" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                           <font>
+                              <Font name="Gadugi" size="22.0" />
+                           </font>
+                        </Button>
+                        <Button contentDisplay="CENTER" graphicTextGap="6.0" layoutX="475.0" layoutY="19.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="117.0" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Events" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                           <font>
+                              <Font name="Gadugi" size="22.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="43.0" prefWidth="391.0">
+                     <children>
+                        <ImageView fitHeight="62.0" fitWidth="97.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@profile.png" />
+                           </image>
+                        </ImageView>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="304.0">
+                           <children>
+                              <Text fill="#4364c7" strokeType="OUTSIDE" strokeWidth="0.0" text="User Logged In:">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </Text>
+                              <Label fx:id="userLoggedInLbl" prefHeight="35.0" prefWidth="167.0" textFill="#faf5f5">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
-            </VBox>
-         </children>
-      </HBox>
-      <Button layoutX="44.0" layoutY="668.0" mnemonicParsing="false" onAction="#handleLogOutButton" prefHeight="38.0" prefWidth="79.0" text="LogOut" textFill="#3558c2" />
-      <Button layoutX="679.0" layoutY="571.0" mnemonicParsing="false" onAction="#handleStatisticsButton" prefHeight="58.0" prefWidth="140.0" style="-fx-background-color: white;" text="Statistics" textFill="#3558c2" />
+            </GridPane>
+         </top>
+         <left>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+         </left>
+         <bottom>
+            <GridPane prefHeight="656.0" prefWidth="1024.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="201.0" minHeight="0.0" prefHeight="63.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="573.0" minHeight="10.0" prefHeight="475.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="118.0" minHeight="0.0" prefHeight="130.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                     <children>
+                        <Pane maxWidth="-Infinity" prefHeight="518.0" prefWidth="635.0">
+                           <children>
+                              <VBox id="bord1" prefHeight="509.0" prefWidth="635.0" spacing="20.0" style="-fx-background-color: #072a90; -fx-border-radius: 20; -fx-background-radius: 20;">
+                                 <children>
+                                    <Label prefHeight="53.0" prefWidth="492.0" text="Here are your account statistics" textFill="WHITE" underline="true">
+                                       <VBox.margin>
+                                          <Insets left="80.0" top="40.0" />
+                                       </VBox.margin>
+                                       <font>
+                                          <Font size="35.0" />
+                                       </font>
+                                    </Label>
+                                    <Label prefHeight="42.0" prefWidth="352.0" text="Select the time period for the statistics" textFill="WHITE">
+                                       <VBox.margin>
+                                          <Insets left="145.0" />
+                                       </VBox.margin>
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <HBox prefHeight="47.0" prefWidth="693.0">
+                                       <children>
+                                          <Label prefHeight="41.0" prefWidth="131.0" text="Start date:" textFill="WHITE">
+                                             <HBox.margin>
+                                                <Insets left="50.0" />
+                                             </HBox.margin>
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <DatePicker fx:id="startDate1" prefHeight="32.0" prefWidth="162.0">
+                                             <HBox.margin>
+                                                <Insets left="12.0" top="5.0" />
+                                             </HBox.margin>
+                                          </DatePicker>
+                                          <Label prefHeight="34.0" prefWidth="124.0" text="End date:" textFill="WHITE">
+                                             <HBox.margin>
+                                                <Insets left="140.0" />
+                                             </HBox.margin>
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <DatePicker fx:id="endDate1" prefHeight="32.0" prefWidth="162.0">
+                                             <HBox.margin>
+                                                <Insets left="6.0" right="30.0" top="5.0" />
+                                             </HBox.margin>
+                                          </DatePicker>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                                       <children>
+                                          <Label alignment="TOP_LEFT" contentDisplay="CENTER" graphicTextGap="2.0" prefHeight="64.0" prefWidth="419.0" text="Generate report about your new friends and messages received in the time period selected" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
+                                             <font>
+                                                <Font name="Verdana" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <Button mnemonicParsing="false" onAction="#handleGeneralButton" prefHeight="43.0" prefWidth="103.0" style="-fx-background-color: white;" text="General report" textFill="#3558c2">
+                                             <effect>
+                                                <DropShadow />
+                                             </effect>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" layoutX="10.0" layoutY="264.0" prefHeight="100.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox alignment="CENTER" prefHeight="100.0" prefWidth="403.0" spacing="20.0">
+                                             <children>
+                                                <Label maxWidth="-Infinity" prefHeight="64.0" prefWidth="415.0" text="Generate report about your messages received from a friend in the time period selected" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
+                                                   <font>
+                                                      <Font name="Verdana" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="friendEmail1" alignment="CENTER" maxWidth="-Infinity" prefHeight="37.0" prefWidth="231.0" promptText="Type your friend's email here" style="-fx-background-color: white;">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </TextField>
+                                             </children>
+                                          </VBox>
+                                          <Button mnemonicParsing="false" onAction="#handleMessagesReport" prefHeight="43.0" prefWidth="130.0" style="-fx-background-color: white;" text="Messages report" textFill="#3558c2">
+                                             <effect>
+                                                <DropShadow />
+                                             </effect>
+                                             <HBox.margin>
+                                                <Insets left="20.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <Pane prefHeight="0.0" prefWidth="693.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </Pane>
+                     </children>
+                  </VBox>
+                  <ImageView fx:id="logOut" fitHeight="74.0" fitWidth="74.0" onMouseClicked="#handleLogOutButton" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
+                     <image>
+                        <Image url="@logo.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </ImageView>
+               </children>
+            </GridPane>
+         </bottom>
+      </BorderPane>
     </children>
 </AnchorPane>

@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
@@ -17,10 +18,13 @@ public class MainController {
     @FXML
     private Label userLoggedInLbl;
 
+    @FXML
+    private Button req;
+
 
     public void setService(Controller service) {
         this.service = service;
-        userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName() + " " + service.findOneByEmail(service.getCurrentEmail()).getLastName());
+        userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName());
     }
 
     public void setStage(Stage primaryStage) {
@@ -41,20 +45,19 @@ public class MainController {
     }
 
     @FXML
-    void handleMyFriendsButton(ActionEvent event) throws IOException {
+    public void handleMyFriendsButton(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("myfriends-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         primaryStage.setTitle("My friends");
         primaryStage.setScene(scene);
-
         MyFriendsController myFriendsController = fxmlLoader.getController();
         myFriendsController.setService(service);
         myFriendsController.setStage(primaryStage);
     }
 
     @FXML
-    void handleLogOutButton(ActionEvent event) throws IOException {
+    public void handleLogOutButton() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("loginView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
@@ -93,15 +96,13 @@ public class MainController {
     }
 
     @FXML
-    void handleStatisticsButton(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("statistics-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+    void home(){
 
-        primaryStage.setTitle("Connefy");
-        primaryStage.setScene(scene);
+    }
 
-        StatisticsController statisticsController = fxmlLoader.getController();
-        statisticsController.setService(service);
-        statisticsController.setStage(primaryStage);
+    public void handleGeneralButton(ActionEvent actionEvent) {
+    }
+
+    public void handleMessagesReport(ActionEvent actionEvent) {
     }
 }

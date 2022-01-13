@@ -17,6 +17,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -37,6 +39,7 @@ public class RequestsController implements Observer {
     public void setService(Controller service) {
         this.service = service;
         this.service.addObserver(this);
+        userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName());
         initModel();
     }
 
@@ -60,10 +63,19 @@ public class RequestsController implements Observer {
     private Button accept;
 
     @FXML
+    private Label userLoggedInLbl;
+
+    @FXML
     private TextField searchBar;
 
     @FXML
     private TableView<Cerere> cereri;
+
+    @FXML
+    private RadioButton sent;
+
+    @FXML
+    private RadioButton recv;
 
     @FXML
     public void initialize() {
@@ -73,6 +85,7 @@ public class RequestsController implements Observer {
         cereri.setItems(model);
         searchBar.textProperty().addListener(o->handleFilter());
         addReqsTableScrollbarListener();
+        recv.setSelected(true);
     }
 
 
@@ -201,6 +214,7 @@ public class RequestsController implements Observer {
         setSentReqs();
         cereri.setItems(model);
         from.setText("To");
+        recv.setSelected(false);
 
     }
 
@@ -208,8 +222,71 @@ public class RequestsController implements Observer {
         initModel();
         from.setCellValueFactory(new PropertyValueFactory<Cerere, String>("email_sender"));
         from.setText("From");
+        sent.setSelected(false);
     }
 
+    public void home() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        MainController mainController = fxmlLoader.getController();
+        mainController.setService(service);
+        mainController.setStage(primaryStage);
+    }
+
+    @FXML
+    public void handleLogOutButton() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("loginView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        LoginController loginController = fxmlLoader.getController();
+        loginController.setController(service);
+        loginController.setStage(primaryStage);
+    }
+
+    @FXML
+    public void handleRequestsButton(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("requests_view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        RequestsController requestsController = fxmlLoader.getController();
+        requestsController.setService(service);
+        requestsController.setStage(primaryStage);
+    }
+
+    @FXML
+    public void handleMessangerButton(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("messanger-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("Connefy");
+        primaryStage.setScene(scene);
+
+        MessengerController messangerController = fxmlLoader.getController();
+        messangerController.setService(service);
+        messangerController.setStage(primaryStage);
+    }
+
+    @FXML
+    void handleMyFriendsButton(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("myfriends-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        primaryStage.setTitle("My friends");
+        primaryStage.setScene(scene);
+        MyFriendsController myFriendsController = fxmlLoader.getController();
+        myFriendsController.setService(service);
+        myFriendsController.setStage(primaryStage);
+    }
     @Override
     public void update(Observable o, Object arg) {
         initModel();

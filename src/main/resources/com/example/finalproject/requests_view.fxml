@@ -1,43 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.RequestsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.RequestsController">
+    <stylesheets>
+        <URL value="@table.css" />
+    </stylesheets>
     <children>
-        <VBox fx:id="sent" layoutX="-7.0" layoutY="-6.0" prefHeight="720.0" prefWidth="1000.0">
-            <children>
-                <Button mnemonicParsing="false" onAction="#handleBackBtn" prefHeight="38.0" prefWidth="79.0" style="-fx-background-color: white;" text="Back" textFill="#3558c2">
-                    <VBox.margin>
-                        <Insets left="10.0" top="20.0" />
-                    </VBox.margin>
-                </Button>
-                <GridPane prefHeight="397.0" prefWidth="960.0">
+      <BorderPane prefHeight="720.0" prefWidth="1024.0">
+         <center>
+                <GridPane centerShape="false" prefHeight="614.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="801.0" minWidth="10.0" prefWidth="752.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="495.0" minWidth="10.0" prefWidth="248.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="842.0" minWidth="10.0" prefWidth="727.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="495.0" minWidth="10.0" prefWidth="273.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="144.0" minHeight="0.0" prefHeight="48.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="364.0" minHeight="10.0" prefHeight="158.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="364.0" minHeight="10.0" prefHeight="59.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="179.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="179.0" minHeight="0.0" prefHeight="105.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="380.0" minHeight="10.0" prefHeight="255.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="364.0" minHeight="8.0" prefHeight="114.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="364.0" minHeight="10.0" prefHeight="102.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <HBox prefHeight="62.0" prefWidth="732.0">
+                        <HBox prefHeight="82.0" prefWidth="727.0" GridPane.rowIndex="1">
                             <children>
-                                <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="292.0" promptText="Search on connefy">
+                                <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="292.0" promptText="Search on connefy" style="-fx-border-color: #072a90; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-border-style: solid; -fx-border-width: 2px;">
                                     <HBox.margin>
-                                        <Insets left="50.0" />
+                                        <Insets left="50.0" top="40.0" />
                                     </HBox.margin>
                            <font>
                               <Font size="14.0" />
@@ -45,17 +52,17 @@
                                 </TextField>
                             </children>
                         </HBox>
-                        <TableView fx:id="cereri" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="678.0" GridPane.rowIndex="1">
+                        <TableView fx:id="cereri" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" prefHeight="163.0" prefWidth="648.0" GridPane.rowIndex="2">
                             <columns>
                                 <TableColumn fx:id="from" prefWidth="222.0" text="From" />
-                                <TableColumn fx:id="status" prefWidth="246.0" text="Status" />
-                                <TableColumn fx:id="date" prefWidth="210.0" text="Data" />
+                                <TableColumn fx:id="status" prefWidth="236.0" text="Status" />
+                                <TableColumn fx:id="date" prefWidth="200.0" text="Data" />
                             </columns>
                             <GridPane.margin>
                                 <Insets left="40.0" right="40.0" />
                             </GridPane.margin>
                         </TableView>
-                  <VBox prefHeight="318.0" prefWidth="281.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <VBox prefHeight="272.0" prefWidth="273.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <children>
                                 <Button fx:id="accept" mnemonicParsing="false" onAction="#acceptButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: green; -fx-border-color: white;" text="Accept" textFill="WHITE">
                            <VBox.margin>
@@ -64,45 +71,122 @@
                         </Button>
                         <Button layoutX="80.0" layoutY="15.0" mnemonicParsing="false" onAction="#declineButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: crimson; -fx-border-color: white;" text="Decline" textFill="WHITE">
                            <VBox.margin>
-                              <Insets top="50.0" />
+                              <Insets top="20.0" />
                            </VBox.margin>
                         </Button>
-                        <Button layoutX="80.0" layoutY="154.0" mnemonicParsing="false" onAction="#cancelButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: white;" text="Cancel" textFill="#3558c2">
+                        <Button layoutX="80.0" layoutY="154.0" mnemonicParsing="false" onAction="#cancelButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: white;" text="Cancel" textFill="#3552c8">
                            <VBox.margin>
-                              <Insets top="50.0" />
+                              <Insets top="20.0" />
                            </VBox.margin>
                         </Button>
                      </children>
                      <padding>
-                        <Insets bottom="25.0" left="70.0" right="5.0" top="5.0" />
+                        <Insets bottom="25.0" left="70.0" right="5.0" />
                      </padding>
                   </VBox>
+                  <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="105.0" prefWidth="727.0" spacing="50.0" GridPane.rowIndex="3">
+                     <children>
+                        <RadioButton fx:id="sent" mnemonicParsing="false" onAction="#onSent" text="Sent" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton fx:id="recv" layoutX="327.0" layoutY="30.0" mnemonicParsing="false" onAction="#onRecv" text="Recv" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </RadioButton>
+                     </children>
+                     <opaqueInsets>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                     </opaqueInsets>
+                  </HBox>
+                  <ImageView fitHeight="74.0" fitWidth="74.0" nodeOrientation="INHERIT" onMouseClicked="#handleLogOutButton" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                     <image>
+                        <Image url="@logo.png" />
+                     </image>
+                  </ImageView>
                     </children>
-                    <padding>
-                        <Insets top="120.0" />
-                    </padding>
-               <VBox.margin>
-                  <Insets bottom="20.0" left="20.0" right="20.0" />
-               </VBox.margin>
                 </GridPane>
-            </children>
-        </VBox>
-      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="65.0" prefWidth="744.0" spacing="50.0" AnchorPane.topAnchor="400.0">
-         <children>
-            <Button fx:id="sent" mnemonicParsing="false" onAction="#onSent" text="Sent">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button fx:id="recv" mnemonicParsing="false" onAction="#onRecv" text="Received" textAlignment="CENTER">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-         </children>
-         <opaqueInsets>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </opaqueInsets>
-      </HBox>
+         </center>
+         <top>
+            <GridPane prefHeight="64.0" prefWidth="1023.0" style="-fx-background-color: #072a90;" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="495.0" minWidth="10.0" prefWidth="305.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="695.0" minWidth="10.0" prefWidth="695.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER" focusTraversable="true" nodeOrientation="LEFT_TO_RIGHT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #072a90;" GridPane.columnIndex="1">
+                     <children>
+                        <ImageView fitHeight="39.0" fitWidth="41.0" onMouseClicked="#home" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@home.jpg" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="30.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Button contentDisplay="CENTER" graphicTextGap="6.0" layoutX="299.0" layoutY="19.0" mnemonicParsing="false" onAction="#handleMyFriendsButton" prefHeight="40.0" prefWidth="117.0" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Friends" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                           <font>
+                              <Font name="Gadugi" size="22.0" />
+                           </font>
+                        </Button>
+                        <Button contentDisplay="CENTER" graphicTextGap="6.0" layoutX="358.0" layoutY="19.0" mnemonicParsing="false" onAction="#handleRequestsButton" prefHeight="40.0" prefWidth="117.0" style="-fx-background-color: #4364C7; -fx-text-fill: white;" text="Requests" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                           <font>
+                              <Font name="Gadugi" size="22.0" />
+                           </font>
+                        </Button>
+                        <Button contentDisplay="CENTER" graphicTextGap="6.0" layoutX="416.0" layoutY="19.0" mnemonicParsing="false" onAction="#handleMessangerButton" prefHeight="40.0" prefWidth="117.0" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Chat" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                           <font>
+                              <Font name="Gadugi" size="22.0" />
+                           </font>
+                        </Button>
+                        <Button contentDisplay="CENTER" graphicTextGap="6.0" layoutX="475.0" layoutY="19.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="117.0" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Events" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP">
+                           <font>
+                              <Font name="Gadugi" size="22.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="43.0" prefWidth="391.0">
+                     <children>
+                        <ImageView fitHeight="62.0" fitWidth="97.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@profile.png" />
+                           </image>
+                        </ImageView>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="304.0">
+                           <children>
+                              <Text fill="#4364c7" strokeType="OUTSIDE" strokeWidth="0.0" text="User Logged In:">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </Text>
+                              <Label fx:id="userLoggedInLbl" prefHeight="38.0" prefWidth="273.0" textFill="#faf5f5">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="20.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+         </top>
+      </BorderPane>
     </children>
 </AnchorPane>
