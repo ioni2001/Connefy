@@ -64,8 +64,7 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
              PreparedStatement statement = connection.prepareStatement(
                      "SELECT cereri.id, cereri.status, cereri.email_sender, cereri.email_recv, cereri.data\n" +
                      "FROM users\n" +
-                     "INNER JOIN cereri ON cereri.email_sender = ? ;");){
-             statement.setString(1, getCurrentEmail());
+                     "INNER JOIN cereri ON cereri.email_sender = users.email ;");){
              ResultSet resultSet = statement.executeQuery();
              while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
