@@ -219,6 +219,11 @@ public class MessageDbRepository implements Repository<Long, Message> {
     }
 
     @Override
+    public Iterable<Cerere> getSentReqs(String email) {
+        return null;
+    }
+
+    @Override
     public Message update(Message entity) {
         return null;
     }

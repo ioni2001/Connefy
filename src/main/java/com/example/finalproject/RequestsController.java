@@ -56,7 +56,6 @@ public class RequestsController implements Observer {
     private Page<Cerere> firstLoadedCererePage;
     private Page<Cerere> secondLoadedCererePage;
 
-
     @FXML
     private Button accept;
 
@@ -80,7 +79,7 @@ public class RequestsController implements Observer {
     public void acceptButt(){
         Cerere a = this.cereri.getSelectionModel().getSelectedItem();
         try{
-            if(a.getStatus().equals("pending")) {
+            if(a.getStatus().equals("pending") && a.getEmail_recv().equals(service.getCurrentEmail())) {
                 service.addFriend(a.getEmail_sender());
                 a.setStatus("approved");
                 service.updateRequest(a);
@@ -146,6 +145,11 @@ public class RequestsController implements Observer {
         model.setAll(cereri);
     }
 
+    private void setSentReqs(){
+        List<Cerere> cereri = (List<Cerere>) service.getAllSent(service.getCurrentEmail());
+        model.setAll(cereri);
+    }
+
     private void initModel() {
         initReqs();
     }
@@ -166,7 +170,7 @@ public class RequestsController implements Observer {
 
     public void declineButt(ActionEvent actionEvent) {
         Cerere a = this.cereri.getSelectionModel().getSelectedItem();
-        if(a.getStatus().equals("pending")) {
+        if(a.getStatus().equals("pending") && a.getEmail_recv().equals(service.getCurrentEmail())) {
             a.setStatus("declined");
             service.updateRequest(a);
             MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Declined !");
@@ -178,8 +182,10 @@ public class RequestsController implements Observer {
 
     public void cancelButt(ActionEvent actionEvent) {
         Cerere a = this.cereri.getSelectionModel().getSelectedItem();
-        if(a.getStatus().equals("pending")) {
-            service.removeRequest(a.getId());
+        System.out.println(a);
+        Long id = a.getId();
+        if(a.getStatus().equals("pending") && a.getEmail_sender().equals(service.getCurrentEmail())) {
+            service.removeRequest(id);
             initModel();
             MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Canceled !");
         }
@@ -188,8 +194,25 @@ public class RequestsController implements Observer {
         }
     }
 
+    public void onSent(){
+        status.setCellValueFactory(new PropertyValueFactory<Cerere, String>("status"));
+        date.setCellValueFactory(new PropertyValueFactory<Cerere, String>("date"));
+        from.setCellValueFactory(new PropertyValueFactory<Cerere, String>("email_recv"));
+        setSentReqs();
+        cereri.setItems(model);
+        from.setText("To");
+
+    }
+
+    public void onRecv(){
+        initModel();
+        from.setCellValueFactory(new PropertyValueFactory<Cerere, String>("email_sender"));
+        from.setText("From");
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         initModel();
+        //setSentReqs();
     }
 }

@@ -235,6 +235,11 @@ public class UserDbRepository implements Repository<Long, User>, UserPgRepositor
     }
 
     @Override
+    public Iterable<Cerere> getSentReqs(String email) {
+        return null;
+    }
+
+    @Override
     public String getCurrentEmail() {
         if(this.getCurrentId() == -1)
             return null;

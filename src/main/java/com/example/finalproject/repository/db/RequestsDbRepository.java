@@ -31,14 +31,42 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
     }
 
     @Override
+    public Iterable<Cerere> getSentReqs(String email){
+        List<Cerere> cereri = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT * FROM cereri WHERE email_sender = ?");){
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String status = resultSet.getString("status");
+                String email1 = resultSet.getString("email_sender");
+                String email2 = resultSet.getString("email_recv");
+                String data = resultSet.getString("data");
+
+                Cerere c = new Cerere(email1, email2,status,data);
+                c.setId(id);
+                cereri.add(c);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cereri;
+    }
+
+    @Override
     public Iterable<Cerere> getAllEntities() {
-        Set<Cerere> cereri = new HashSet<>();
+        List<Cerere> cereri = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement(
                      "SELECT cereri.id, cereri.status, cereri.email_sender, cereri.email_recv, cereri.data\n" +
                      "FROM users\n" +
-                     "INNER JOIN cereri ON cereri.email_recv = users.email;");
-             ResultSet resultSet = statement.executeQuery()) {
+                     "INNER JOIN cereri ON cereri.email_sender = ? ;");){
+             statement.setString(1, getCurrentEmail());
+             ResultSet resultSet = statement.executeQuery();
              while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
                 String status = resultSet.getString("status");
