@@ -150,6 +150,11 @@ public class FriendshipMemoryRepository<ID, E extends Entity<ID>> implements Rep
         return null;
     }
 
+    @Override
+    public Iterable<Cerere> getSentReqs(String email) {
+        return null;
+    }
+
 
     /**
      * Clears the container where the entities are stored

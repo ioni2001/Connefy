@@ -249,6 +249,11 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
                 return (Cerere) c;
             }
         }
+        for(Object c: this.getAllSent(getCurrentEmail())){
+            if(((Cerere) c).getId().equals(id)){
+                return (Cerere) c;
+            }
+        }
         return null;
     }
 
@@ -357,6 +362,10 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
             }
         }
         saveTextToPdf(body.toString());
+    }
+
+    public Iterable<Cerere> getAllSent(String email){
+        return this.requestsService.getSentReqs(email);
     }
 
     private void saveTextToPdf(String text) throws IOException {
