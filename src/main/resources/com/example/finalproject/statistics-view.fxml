@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.StatisticsController">
+   <children>
+      <VBox layoutX="-14.0" prefHeight="720.0" prefWidth="1024.0">
+         <children>
+            <Label prefHeight="54.0" prefWidth="362.0" text="Here are your statistics" textFill="WHITE">
+               <VBox.margin>
+                  <Insets left="330.0" top="40.0" />
+               </VBox.margin>
+               <effect>
+                  <Bloom />
+               </effect>
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Label prefHeight="66.0" prefWidth="352.0" text="Select the time period for the statistics" textFill="WHITE">
+               <VBox.margin>
+                  <Insets left="200.0" top="30.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <HBox prefHeight="43.0" prefWidth="1024.0">
+               <children>
+                  <Label prefHeight="34.0" prefWidth="81.0" text="Start date:" textFill="WHITE">
+                     <HBox.margin>
+                        <Insets left="50.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <DatePicker fx:id="startDate" prefHeight="32.0" prefWidth="162.0">
+                     <HBox.margin>
+                        <Insets left="12.0" top="5.0" />
+                     </HBox.margin>
+                  </DatePicker>
+                  <Label prefHeight="34.0" prefWidth="81.0" text="End date:" textFill="WHITE">
+                     <HBox.margin>
+                        <Insets left="140.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <DatePicker fx:id="endDate" prefHeight="32.0" prefWidth="162.0">
+                     <HBox.margin>
+                        <Insets left="6.0" top="5.0" />
+                     </HBox.margin>
+                  </DatePicker>
+               </children>
+            </HBox>
+            <Label prefHeight="56.0" prefWidth="918.0" text="Generate report about your new friends and messages received in the time period selected" textFill="WHITE">
+               <VBox.margin>
+                  <Insets left="60.0" top="60.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Javanese Text" size="22.0" />
+               </font>
+            </Label>
+            <Button mnemonicParsing="false" onAction="#handleGeneralButton" prefHeight="43.0" prefWidth="103.0" style="-fx-background-color: white;" text="General report" textFill="#3558c2">
+               <VBox.margin>
+                  <Insets left="450.0" />
+               </VBox.margin>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Button>
+            <Label prefHeight="56.0" prefWidth="918.0" text="Generate report about your messages received from a friend in the time period selected" textFill="WHITE">
+               <font>
+                  <Font name="Javanese Text" size="22.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="60.0" top="80.0" />
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="friendEmail" prefHeight="42.0" prefWidth="566.0" promptText="Type your friend's email here" style="-fx-background-color: white;">
+               <VBox.margin>
+                  <Insets left="250.0" right="300.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <Button mnemonicParsing="false" onAction="#handleMessagesReport" prefHeight="43.0" prefWidth="106.0" style="-fx-background-color: white;" text="Messages report" textFill="#3558c2">
+               <VBox.margin>
+                  <Insets left="450.0" top="30.0" />
+               </VBox.margin>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Button>
+         </children>
+      </VBox>
+      <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleBackBtn" prefHeight="38.0" prefWidth="79.0" style="-fx-background-color: white;" text="Back" textFill="#3558c2" />
+   </children>
+</AnchorPane>
