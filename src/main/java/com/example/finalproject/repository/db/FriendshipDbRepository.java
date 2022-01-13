@@ -224,6 +224,11 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
     }
 
     @Override
+    public Iterable<Cerere> getSentReqs(String email) {
+        return null;
+    }
+
+    @Override
     public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
         return null;
     }

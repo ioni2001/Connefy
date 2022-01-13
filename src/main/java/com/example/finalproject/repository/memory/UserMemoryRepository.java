@@ -174,6 +174,11 @@ public class UserMemoryRepository<ID, E extends Entity<ID>> implements Repositor
     }
 
     @Override
+    public Iterable<Cerere> getSentReqs(String email) {
+        return null;
+    }
+
+    @Override
     public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
         return null;
     }

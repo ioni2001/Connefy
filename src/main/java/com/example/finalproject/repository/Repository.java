@@ -1,5 +1,6 @@
 package com.example.finalproject.repository;
 
+import com.example.finalproject.domain.Cerere;
 import com.example.finalproject.domain.Entity;
 import com.example.finalproject.domain.Message;
 import com.example.finalproject.domain.User;
@@ -97,5 +98,6 @@ public interface Repository<ID, E extends Entity<ID>> extends UserPgRepository, 
     public void removeFriendRequest(String email1, String email2);
     public List<E> conversation(String email1, String email2);
     public Iterable<E> getReqByEmail(String email);
+    public Iterable<Cerere> getSentReqs(String email);
 }
 
