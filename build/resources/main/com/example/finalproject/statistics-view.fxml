@@ -20,9 +20,6 @@
                <VBox.margin>
                   <Insets left="330.0" top="40.0" />
                </VBox.margin>
-               <effect>
-                  <Bloom />
-               </effect>
                <font>
                   <Font size="36.0" />
                </font>

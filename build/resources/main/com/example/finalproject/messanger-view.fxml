@@ -13,7 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import java.net.URL?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.MessengerController">
+    <stylesheets>
+        <URL value="@table.css" />
+    </stylesheets>
     <children>
         <VBox layoutX="-7.0" layoutY="-6.0" prefHeight="720.0" prefWidth="1000.0">
             <children>
