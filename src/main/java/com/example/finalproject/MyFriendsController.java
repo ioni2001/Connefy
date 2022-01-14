@@ -1,8 +1,6 @@
 package com.example.finalproject;
 
-import com.example.finalproject.Main;
 import com.example.finalproject.controller.Controller;
-import com.example.finalproject.domain.Cerere;
 import com.example.finalproject.domain.User;
 import com.example.finalproject.paging.Page;
 import com.example.finalproject.paging.PageableImpl;
@@ -12,8 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -31,6 +27,7 @@ public class MyFriendsController implements Observer {
     private Controller service;
     private Stage primaryStage;
     ObservableList<User> model = FXCollections.observableArrayList();
+    ObservableList<String> model1 = FXCollections.observableArrayList();
     private Page<User> firstLoadedUsersPage;
     private Page<User> secondLoadedUsersPage;
 
@@ -52,11 +49,21 @@ public class MyFriendsController implements Observer {
     @FXML
     private Label userLoggedInLbl;
 
+    @FXML
+    private TextField searchAdd;
+
+    @FXML
+    private ListView<String> listView;
+
+    @FXML
+    private Button addButt;
+
     public void setService(Controller service){
         this.service = service;
         this.service.addObserver(this);
         userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName() + " " + service.findOneByEmail(service.getCurrentEmail()).getLastName());
         initModel();
+        initModel1();
     }
 
     public void setStage(Stage primaryStage) {
@@ -70,8 +77,56 @@ public class MyFriendsController implements Observer {
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<User, String>("lastName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<User, String>("email"));
         tableView.setItems(model);
+        listView.setItems(model1);
         searchBar.textProperty().addListener(o -> handleFilter());
+        searchAdd.textProperty().addListener(o -> handleFilter1());
+        listView.getSelectionModel().selectedItemProperty().addListener(o -> handleFilter3());
         addUsersTableScrollbarListener();
+    }
+
+    public void initModel1(){
+        List<User> users = new ArrayList<>();
+        for(Object u: service.getAllUsers()){
+            users.add((User)u);
+        }
+        List<String> listf = new ArrayList<>();
+        for(User u: users){
+            listf.add(u.getFirstName()+" "+u.getLastName());
+        }
+        model1.setAll(listf);
+
+    }
+
+    private void handleFilter1() {
+        Predicate<User> p1 = n -> n.getFirstName().contains(searchAdd.getText());
+        Predicate<User> p2 = n -> n.getLastName().contains(searchAdd.getText());
+
+        List<User> users = new ArrayList<>();
+        for(Object u: service.getAllUsers()){
+            users.add((User)u);
+        }
+        List<User> users1 = users
+                .stream().filter(p1.or(p2)).collect(Collectors.toList());
+        List<String> listf = new ArrayList<>();
+        for(User u: users1){
+            listf.add(u.getFirstName()+" "+u.getLastName());
+        }
+        if(users1.size() == 0){
+            listView.setVisible(false);
+        }
+        else{
+            listView.setVisible(true);
+        }
+        model1.setAll(listf);
+    }
+
+    private void handleFilter3(){
+        try {
+            searchAdd.setText(listView.getSelectionModel().getSelectedItem());
+        }
+        catch (Exception e){
+
+        }
     }
 
     private void initModel() {
@@ -113,6 +168,39 @@ public class MyFriendsController implements Observer {
         List<User> friends = firstLoadedUsersPage.getContent();
         friends.addAll(secondLoadedUsersPage.getContent());
         model.setAll(friends);
+    }
+
+    @FXML
+    void add() {
+        User selected = null;
+        for (User u : (Iterable<User>)service.getAllUsers()) {
+            String s = listView.getSelectionModel().getSelectedItem();
+            if (s.equals(u.getFirstName() + " " + u.getLastName())) {
+                selected = u;
+                break;
+            }
+        }
+        if (selected != null) {
+            boolean friendship = false;
+            List<User> friendsOfUser = service.getFriends(service.findOneByEmail(service.getCurrentEmail()));
+            for (User user : friendsOfUser) {
+                if (user.equals(selected)) {
+                    friendship = true;
+                    MessageAlert.showErrorMessage(null, "Already friends!");
+                }
+            }
+            if (!friendship) {
+                boolean ok = false;
+                try {
+                    service.addCerere(service.getCurrentEmail(), selected.getEmail(), "pending");
+                    ok = true;
+                } catch (Exception e) {
+                    MessageAlert.showErrorMessage(null, e.getMessage());
+                }
+                if (ok)
+                    MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Friend request", "Sent");
+            }
+        }
     }
 
     @FXML
@@ -213,7 +301,6 @@ public class MyFriendsController implements Observer {
         messangerController.setStage(primaryStage);
     }
 
-    @FXML
     public void chatImg() throws IOException {
         User selected = tableView.getSelectionModel().getSelectedItem();
         if (selected != null) {

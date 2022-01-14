@@ -222,6 +222,7 @@ public class MessageDbRepository implements Repository<Long, Message> {
                         where fromtbl = ? and totbl like ?
                         or fromtbl = ? and totbl like ?
                         LIMIT (?) OFFSET (?)
+                        ORDER BY datetbl
                         """;
 
         try (Connection connection = DriverManager.getConnection(url, username, password);

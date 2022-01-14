@@ -69,6 +69,18 @@
     -fx-padding: 2;
 }
 
+.text-field{
+    -fx-border-color: #072a90; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-border-style: solid; -fx-border-width: 2px;
+}
+
+.list-view {
+    -fx-border-color: #072a90;
+    -fx-border-radius: 0px 0px 7px 7px;
+    -fx-background-radius: 10px;
+    -fx-border-style: solid;
+    -fx-border-width: 2px;
+}
+
 #bord1 { /* modify the selector according to your needs */
     -fx-border-style: solid;
     -fx-border-color: white;
