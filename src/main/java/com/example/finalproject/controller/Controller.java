@@ -6,6 +6,7 @@ import com.example.finalproject.domain.validators.ValidationException;
 import com.example.finalproject.domain.validators.exceptions.LogInException;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
 import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageImpl;
 import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.service.FriendshipService;
 import com.example.finalproject.service.MessageService;
@@ -104,15 +105,7 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     }
 
     public List<User> getFriends(User user){
-        List<User> friends = new ArrayList<>();
-        Iterable<Friendship> friendships = friendshipService.getFriends(user);
-        for(Friendship friendship:friendships) {
-            if (!friendship.getTuple().getLeft().equals(user.getId()))
-                friends.add(this.userService.getUser(friendship.getTuple().getLeft()));
-            else
-                friends.add(this.userService.getUser(friendship.getTuple().getRight()));
-        }
-        return friends;
+        return friendshipService.getFriends(user);
     }
 
     public void updateUser(String email, String firstName, String lastName){
@@ -238,6 +231,13 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
                         .collect(Collectors.toList());
     }
 
+    public Page<Message> viewConversation(Pageable<Message> pageable, String fristEmail, String secondEmail){
+        Page<Message> pageAux = this.messageService.conversation(pageable, fristEmail, secondEmail);
+        List<Message> messageAux = pageAux.getContent().stream().sorted(Comparator
+                .comparing(Message::getDate)).collect(Collectors.toList());
+        return new PageImpl<>(pageable, messageAux);
+    }
+
     public void addCerere(String email1, String email2, String status){
         Cerere c = new Cerere(email1, email2,status,LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
         this.requestsService.add((E4) c);
@@ -286,6 +286,9 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
     public Page<Cerere> getRequests(Pageable<Cerere> pageable,String email){
         return this.requestsService.getReqByName(pageable,email);
     }
+    public Page<User> friendsOfAnUser(Pageable<User> pageable, User user){
+        return this.friendshipService.friendsOfAnUser(pageable, user);
+    }
 
     public void saveConversation(String loggedUserEmail, String friendEmail, Timestamp start, Timestamp end) throws IOException {
         List<Message> messagesAux = this.viewConversation(loggedUserEmail, friendEmail);
@@ -301,10 +304,10 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
 
         StringBuilder body = new StringBuilder();
         if(size == 0){
-            body.append("You have no messages received from your friend in the time period selected!");
+            body.append("You have no messages received").append("\n").append("from your friend in the time period selected!");
         }
         else {
-            body.append("You have ").append(size).append(" messages received from your friend in the time period selected!").append("\n\n");
+            body.append("You have ").append(size).append(" messages received").append("\n").append("from your friend in the time period selected!").append("\n\n");
 
             User friend = this.findOneByEmail(friendEmail);
             for (Message message : messages) {
@@ -328,10 +331,10 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         }
         StringBuilder body = new StringBuilder();
         if(size == 0){
-            body.append("You have no messages received in the time period selected!");
+            body.append("You have no messages received").append("\n").append("in the time period selected!");
         }
         else {
-            body.append("You have ").append(size).append(" messages received in the time period selected!").append("\n\n");
+            body.append("You have ").append(size).append(" messages received").append("\n").append("in the time period selected!").append("\n\n");
 
             for (Message message : messages) {
                 body.append("New message from: ").append(message.getFrom().getFirstName()).append(" ").append(message.getFrom().getLastName()).append("\nMessage: \n\"").append(message.getMessage())
@@ -340,7 +343,7 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
         }
 
         size = 0;
-        Iterable<Friendship> friendshipsAux = this.friendshipService.getFriends(this.findOneByEmail(this.getCurrentEmail()));
+        Iterable<Friendship> friendshipsAux = this.friendshipService.getFriendships(this.findOneByEmail(this.getCurrentEmail()));
         List<Friendship> friendships = new ArrayList<>();
         for(Friendship friendship:friendshipsAux){
             if(LocalDateTime.parse(friendship.getDate(), Constants.DATE_TIME_FORMATTER).isAfter(start.toLocalDateTime()) && LocalDateTime.parse(friendship.getDate(), Constants.DATE_TIME_FORMATTER).isBefore(end.toLocalDateTime())){
@@ -349,10 +352,10 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
             }
         }
         if(size == 0){
-            body.append("You have no new friendships made in the time period selected!");
+            body.append("You have no new friendships made").append("\n").append("in the time period selected!");
         }
         else {
-            body.append("You have ").append(size).append(" new friendships made in the time period selected!").append("\n\n");
+            body.append("You have ").append(size).append(" new friendships made").append("\n").append("in time period selected!").append("\n\n");
 
             for(Friendship friendship:friendships){
                 if(friendship.getTuple().getLeft().equals(this.userService.getCurrentId()))
@@ -366,6 +369,9 @@ public class Controller <ID, E extends Entity<ID>, ID2, E2 extends Entity<ID2>, 
 
     public Iterable<Cerere> getAllSent(String email){
         return this.requestsService.getSentReqs(email);
+    }
+    public Page<Cerere> getSentReqs(Pageable<Cerere> pageable, String email){
+        return this.requestsService.getSentReqs(pageable, email);
     }
 
     private void saveTextToPdf(String text) throws IOException {

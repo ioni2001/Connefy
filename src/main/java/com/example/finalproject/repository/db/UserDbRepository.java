@@ -210,7 +210,7 @@ public class UserDbRepository implements Repository<Long, User>, UserPgRepositor
     }
 
     @Override
-    public Iterable<User> friendshipsOfAnUser(User e) {
+    public List<User> friendshipsOfAnUser(User e) {
         return null;
     }
 
@@ -236,6 +236,11 @@ public class UserDbRepository implements Repository<Long, User>, UserPgRepositor
 
     @Override
     public Iterable<Cerere> getSentReqs(String email) {
+        return null;
+    }
+
+    @Override
+    public List<User> friendsOfAnUser(User user) {
         return null;
     }
 
@@ -285,7 +290,7 @@ public class UserDbRepository implements Repository<Long, User>, UserPgRepositor
     }
 
     @Override
-    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
+    public Page<User> friendsOfAnUser(Pageable<User> pageable, User user) {
         return null;
     }
 
@@ -296,6 +301,11 @@ public class UserDbRepository implements Repository<Long, User>, UserPgRepositor
 
     @Override
     public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        return null;
+    }
+
+    @Override
+    public Page<Cerere> getSentReqs(Pageable<Cerere> pageable, String email) {
         return null;
     }
 }

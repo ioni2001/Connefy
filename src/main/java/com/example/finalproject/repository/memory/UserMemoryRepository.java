@@ -179,7 +179,12 @@ public class UserMemoryRepository<ID, E extends Entity<ID>> implements Repositor
     }
 
     @Override
-    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
+    public List<User> friendsOfAnUser(User user) {
+        return null;
+    }
+
+    @Override
+    public Page<User> friendsOfAnUser(Pageable<User> pageable, User user) {
         return null;
     }
 
@@ -190,6 +195,11 @@ public class UserMemoryRepository<ID, E extends Entity<ID>> implements Repositor
 
     @Override
     public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        return null;
+    }
+
+    @Override
+    public Page<Cerere> getSentReqs(Pageable<Cerere> pageable, String email) {
         return null;
     }
 

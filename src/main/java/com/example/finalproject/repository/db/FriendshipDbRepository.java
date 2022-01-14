@@ -6,12 +6,14 @@ import com.example.finalproject.domain.validators.exceptions.EntityNullException
 import com.example.finalproject.domain.validators.exceptions.ExistanceException;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
 import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageImpl;
 import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.FriendshipMemoryRepository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -146,24 +148,27 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
         return entity;
     }
 
-    @Override
-    public String getCurrentEmail() {
-        return null;
-    }
+    public User getUserFromUsers(Long id){
+        String sql = "SELECT * FROM users WHERE id = ?";
+        User user = null;
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                String firstName = resultSet.getString(2);
+                String lastName = resultSet.getString(3);
+                String email = resultSet.getString(4);
+                String parola = resultSet.getString(5);
+                user = new User(firstName, lastName, email,parola);
+                user.setId(id);
+                return user;
+            }
 
-    @Override
-    public List<Long> getAllIDs() {
-        return null;
-    }
-
-    @Override
-    public Friendship findOneByEmail(String email) {
-        return null;
-    }
-
-    @Override
-    public Friendship findOneByParola(String parola) {
-        return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     @Override
@@ -173,7 +178,7 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
              PreparedStatement statement = connection.prepareStatement("SELECT * from friendships where leftv = ? or rightv = ?")){
             statement.setLong(1, user.getId());
             statement.setLong(2, user.getId());
-             ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
@@ -209,9 +214,87 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
     }
 
     @Override
-    public void removeFriendRequest(String email1, String email2) {
+    public List<User> friendsOfAnUser(User user) {
+        List<User> friendshipsList = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement("SELECT * from friendships where leftv = ? or rightv = ?")){
+            statement.setLong(1, user.getId());
+            statement.setLong(2, user.getId());
+            ResultSet resultSet = statement.executeQuery();
 
+            while (resultSet.next()) {
+                Long left = resultSet.getLong("leftv");
+                Long right = resultSet.getLong("rightv");
+
+                User friend = null;
+                if(left.equals(user.getId())){
+                    friend = getUserFromUsers(right);
+                }
+                else{
+                    friend = getUserFromUsers(left);
+                }
+                friendshipsList.add(friend);
+            }
+            return friendshipsList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return friendshipsList;
     }
+
+    @Override
+    public Page<User> friendsOfAnUser(Pageable<User> pageable, User user) {
+        List<User> friendshipsList = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement("SELECT * from friendships where leftv = ? or rightv = ? LIMIT (?) OFFSET (?)")){
+            statement.setLong(1, user.getId());
+            statement.setLong(2, user.getId());
+            statement.setLong(3, pageable.getPageSize());
+            statement.setLong(4, pageable.getPageSize()*(pageable.getPageNumb()-1));
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Long left = resultSet.getLong("leftv");
+                Long right = resultSet.getLong("rightv");
+
+                User friend = null;
+                if(left.equals(user.getId())){
+                    friend = getUserFromUsers(right);
+                }
+                else{
+                    friend = getUserFromUsers(left);
+                }
+                friendshipsList.add(friend);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new PageImpl<>(pageable, friendshipsList);
+    }
+
+
+    @Override
+    public String getCurrentEmail() {
+        return null;
+    }
+
+    @Override
+    public List<Long> getAllIDs() {
+        return null;
+    }
+
+    @Override
+    public Friendship findOneByEmail(String email) {
+        return null;
+    }
+
+    @Override
+    public Friendship findOneByParola(String parola) {
+        return null;
+    }
+
+    @Override
+    public void removeFriendRequest(String email1, String email2) {}
 
     @Override
     public List<Friendship> conversation(String email1, String email2) {
@@ -229,17 +312,17 @@ public class FriendshipDbRepository implements Repository<Long, Friendship> {
     }
 
     @Override
-    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
-        return null;
-    }
-
-    @Override
     public Page<Message> conversation(Pageable<Message> pageable, String email1, String email2) {
         return null;
     }
 
     @Override
     public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        return null;
+    }
+
+    @Override
+    public Page<Cerere> getSentReqs(Pageable<Cerere> pageable, String email) {
         return null;
     }
 

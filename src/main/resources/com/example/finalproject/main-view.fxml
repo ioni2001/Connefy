@@ -86,7 +86,7 @@
                                     <Insets left="20.0" />
                                  </VBox.margin>
                               </Text>
-                              <Label fx:id="userLoggedInLbl" prefHeight="35.0" prefWidth="167.0" textFill="#faf5f5">
+                              <Label fx:id="userLoggedInLbl" prefHeight="35.0" prefWidth="233.0" textFill="#faf5f5">
                                  <font>
                                     <Font size="24.0" />
                                  </font>

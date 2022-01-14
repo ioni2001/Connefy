@@ -126,7 +126,7 @@ public class FriendshipMemoryRepository<ID, E extends Entity<ID>> implements Rep
     }
 
     @Override
-    public Iterable<E> friendshipsOfAnUser(User e) {
+    public List<E> friendshipsOfAnUser(User e) {
         return null;
     }
 
@@ -155,6 +155,11 @@ public class FriendshipMemoryRepository<ID, E extends Entity<ID>> implements Rep
         return null;
     }
 
+    @Override
+    public List<User> friendsOfAnUser(User user) {
+        return null;
+    }
+
 
     /**
      * Clears the container where the entities are stored
@@ -164,7 +169,7 @@ public class FriendshipMemoryRepository<ID, E extends Entity<ID>> implements Rep
     }
 
     @Override
-    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
+    public Page<User> friendsOfAnUser(Pageable<User> pageable, User user) {
         return null;
     }
 
@@ -175,6 +180,11 @@ public class FriendshipMemoryRepository<ID, E extends Entity<ID>> implements Rep
 
     @Override
     public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        return null;
+    }
+
+    @Override
+    public Page<Cerere> getSentReqs(Pageable<Cerere> pageable, String email) {
         return null;
     }
 

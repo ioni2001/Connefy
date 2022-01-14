@@ -2,6 +2,9 @@ package com.example.finalproject;
 
 import com.example.finalproject.controller.Controller;
 import com.example.finalproject.domain.User;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageableImpl;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,6 +27,8 @@ public class MessengerController implements Observer {
     private Controller service;
     private Stage primaryStage;
     ObservableList<User> model = FXCollections.observableArrayList();
+    private Page<User> firstLoadedUsersPage;
+    private Page<User> secondLoadedUsersPage;
 
     @FXML
     private TableColumn<User, String> emailColumn;
@@ -61,11 +66,48 @@ public class MessengerController implements Observer {
         usersTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         usersTable.setItems(model);
         searchBar.textProperty().addListener(o -> handleFilter());
+        addUsersTableScrollbarListener();
     }
 
     private void initModel() {
-        List<User> users = service.getFriends(service.findOneByEmail(service.getCurrentEmail()));
-        model.setAll(users);
+        initFriends();
+    }
+
+    private void addUsersTableScrollbarListener() {
+        Platform.runLater(() -> {
+            ScrollBar tvScrollBar = (ScrollBar) usersTable.lookup(".scroll-bar:vertical");
+            tvScrollBar.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if ((Double) newValue == 0.0) {
+                    if (firstLoadedUsersPage.getPageable().getPageNumb() > 1) {
+                        secondLoadedUsersPage = firstLoadedUsersPage;
+                        firstLoadedUsersPage = service.friendsOfAnUser(firstLoadedUsersPage.previousPageable(), service.findOneByEmail(service.getCurrentEmail()));
+                        setFriendModel();
+                    }
+                } else if ((Double) newValue == 1.0) {
+                    if (secondLoadedUsersPage.getContent().size() == secondLoadedUsersPage.getPageable().getPageSize()) {
+                        Page<User> newUsers = service.friendsOfAnUser(secondLoadedUsersPage.nextPageable(), service.findOneByEmail(service.getCurrentEmail()));
+
+                        if (!newUsers.getContent().isEmpty()) {
+                            firstLoadedUsersPage = secondLoadedUsersPage;
+                            secondLoadedUsersPage = newUsers;
+                            setFriendModel();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    private void initFriends(){
+        firstLoadedUsersPage = service.friendsOfAnUser(new PageableImpl<>(1, 4), service.findOneByEmail(service.getCurrentEmail()));
+        secondLoadedUsersPage = service.friendsOfAnUser(new PageableImpl<>(2, 4), service.findOneByEmail(service.getCurrentEmail()));
+        setFriendModel();
+    }
+
+    private void setFriendModel(){
+        List<User> friends = firstLoadedUsersPage.getContent();
+        friends.addAll(secondLoadedUsersPage.getContent());
+        model.setAll(friends);
     }
 
     @FXML

@@ -2,6 +2,8 @@ package com.example.finalproject.service;
 
 import com.example.finalproject.domain.*;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.FriendshipMemoryRepository;
 import com.example.finalproject.utils.Constants;
@@ -115,7 +117,15 @@ public class FriendshipService  <ID, E extends Entity<ID>> extends Observable im
         networking.setFriendships();
         return networking.mostSociableCommunity();
     }
-    public Iterable<Friendship> getFriends(User user){
+    public List<User> getFriends(User user){
+        return this.friendshipRepository.friendsOfAnUser(user);
+    }
+
+    public Iterable<Friendship> getFriendships(User user){
         return (Iterable<Friendship>) this.friendshipRepository.friendshipsOfAnUser(user);
+    }
+
+    public Page<User> friendsOfAnUser(Pageable<User> pageable, User user){
+        return this.friendshipRepository.friendsOfAnUser(pageable, user);
     }
 }

@@ -44,7 +44,7 @@
                             <children>
                                 <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="292.0" promptText="Search on connefy" style="-fx-border-color: #072a90; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-border-style: solid; -fx-border-width: 2px;">
                                     <HBox.margin>
-                                        <Insets left="50.0" top="40.0" />
+                                        <Insets left="50.0" top="100.0" />
                                     </HBox.margin>
                            <font>
                               <Font size="14.0" />
@@ -61,12 +61,15 @@
                             <GridPane.margin>
                                 <Insets left="40.0" right="40.0" />
                             </GridPane.margin>
+                     <padding>
+                        <Insets top="110.0" />
+                     </padding>
                         </TableView>
                   <VBox prefHeight="272.0" prefWidth="273.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <children>
                                 <Button fx:id="accept" mnemonicParsing="false" onAction="#acceptButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: green; -fx-border-color: white;" text="Accept" textFill="WHITE">
                            <VBox.margin>
-                              <Insets top="50.0" />
+                              <Insets top="130.0" />
                            </VBox.margin>
                         </Button>
                         <Button layoutX="80.0" layoutY="15.0" mnemonicParsing="false" onAction="#declineButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: crimson; -fx-border-color: white;" text="Decline" textFill="WHITE">

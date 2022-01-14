@@ -4,5 +4,5 @@ import com.example.finalproject.domain.Friendship;
 import com.example.finalproject.domain.User;
 
 public interface FriendshipsPgRepository {
-    Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user);
+    Page<User> friendsOfAnUser(Pageable<User> pageable, User user);
 }
