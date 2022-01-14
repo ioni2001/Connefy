@@ -39,7 +39,7 @@ public class RequestsController implements Observer {
     public void setService(Controller service) {
         this.service = service;
         this.service.addObserver(this);
-        userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName());
+        userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName() + " " + service.findOneByEmail(service.getCurrentEmail()).getLastName());
         initModel();
     }
 
@@ -146,6 +146,31 @@ public class RequestsController implements Observer {
         });
     }
 
+    private void addReqsSentTableScrollbarListener() {
+        Platform.runLater(() -> {
+            ScrollBar tvScrollBar = (ScrollBar) cereri.lookup(".scroll-bar:vertical");
+            tvScrollBar.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if ((Double) newValue == 0.0) {
+                    if (firstLoadedCererePage.getPageable().getPageNumb() > 1) {
+                        secondLoadedCererePage = firstLoadedCererePage;
+                        firstLoadedCererePage = service.getRequests(firstLoadedCererePage.previousPageable(),service.getCurrentEmail());
+                        setReqsSentModel();
+                    }
+                } else if ((Double) newValue == 1.0) {
+                    if (secondLoadedCererePage.getContent().size() == secondLoadedCererePage.getPageable().getPageSize()) {
+                        Page<Cerere> newReqs = service.getRequests(secondLoadedCererePage.nextPageable(), service.getCurrentEmail());
+
+                        if (!newReqs.getContent().isEmpty()) {
+                            firstLoadedCererePage = secondLoadedCererePage;
+                            secondLoadedCererePage = newReqs;
+                            setReqsSentModel();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
     private void initReqs(){
         firstLoadedCererePage = service.getRequests(new PageableImpl<>(1, 4),service.getCurrentEmail());
         secondLoadedCererePage = service.getRequests(new PageableImpl<>(2, 4),service.getCurrentEmail());
@@ -158,8 +183,15 @@ public class RequestsController implements Observer {
         model.setAll(cereri);
     }
 
-    private void setSentReqs(){
-        List<Cerere> cereri = (List<Cerere>) service.getAllSent(service.getCurrentEmail());
+    private void initSentReqs(){
+        firstLoadedCererePage = service.getSentReqs(new PageableImpl<>(1, 4),service.getCurrentEmail());
+        secondLoadedCererePage = service.getSentReqs(new PageableImpl<>(2, 4),service.getCurrentEmail());
+        setReqsSentModel();
+    }
+
+    private void setReqsSentModel(){
+        List<Cerere> cereri = firstLoadedCererePage.getContent();
+        cereri.addAll(secondLoadedCererePage.getContent());
         model.setAll(cereri);
     }
 
@@ -171,14 +203,22 @@ public class RequestsController implements Observer {
         Predicate<Cerere> p1 = n -> n.getEmail_sender().contains(searchBar.getText());
         Predicate<Cerere> p2 = n -> n.getStatus().contains(searchBar.getText());
 
-        Iterable<Cerere> cereri = service.getRequests(service.getCurrentEmail());
-        List<Cerere> allCereri = new ArrayList<>();
-        cereri.forEach(allCereri::add);
-        List<Cerere> cerereList = allCereri.stream().filter(x -> x.getEmail_recv().equals(service.getCurrentEmail())).collect(Collectors.toList());
+        if(sent.isDisable()) {
+            Iterable<Cerere> cereri = service.getRequests(service.getCurrentEmail());
+            List<Cerere> allCereri = new ArrayList<>();
+            cereri.forEach(allCereri::add);
+            List<Cerere> cerereList = allCereri.stream().filter(x -> x.getEmail_recv().equals(service.getCurrentEmail())).collect(Collectors.toList());
 
-        List<Cerere> cereri2 = cerereList
-                .stream().filter(p1.or(p2)).collect(Collectors.toList());
-        model.setAll(cereri2);
+            List<Cerere> cereri2 = cerereList
+                    .stream().filter(p1.or(p2)).collect(Collectors.toList());
+            model.setAll(cereri2);
+        }
+        else{
+            List<Cerere> cereri = (List<Cerere>) service.getAllSent(service.getCurrentEmail());
+            List<Cerere> cereri2 = cereri
+                    .stream().filter(p1.or(p2)).collect(Collectors.toList());
+            model.setAll(cereri2);
+        }
     }
 
     public void declineButt(ActionEvent actionEvent) {
@@ -208,14 +248,13 @@ public class RequestsController implements Observer {
     }
 
     public void onSent(){
+        addReqsSentTableScrollbarListener();
+        initSentReqs();
         status.setCellValueFactory(new PropertyValueFactory<Cerere, String>("status"));
         date.setCellValueFactory(new PropertyValueFactory<Cerere, String>("date"));
         from.setCellValueFactory(new PropertyValueFactory<Cerere, String>("email_recv"));
-        setSentReqs();
-        cereri.setItems(model);
         from.setText("To");
         recv.setSelected(false);
-
     }
 
     public void onRecv(){
@@ -289,7 +328,9 @@ public class RequestsController implements Observer {
     }
     @Override
     public void update(Observable o, Object arg) {
-        initModel();
-        //setSentReqs();
+        if(sent.isDisable())
+            initModel();
+        else
+            initSentReqs();
     }
 }

@@ -4,6 +4,9 @@ import com.example.finalproject.Main;
 import com.example.finalproject.controller.Controller;
 import com.example.finalproject.domain.Cerere;
 import com.example.finalproject.domain.User;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageableImpl;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,10 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
@@ -31,6 +31,8 @@ public class MyFriendsController implements Observer {
     private Controller service;
     private Stage primaryStage;
     ObservableList<User> model = FXCollections.observableArrayList();
+    private Page<User> firstLoadedUsersPage;
+    private Page<User> secondLoadedUsersPage;
 
     @FXML
     private TextField searchBar;
@@ -47,9 +49,13 @@ public class MyFriendsController implements Observer {
     @FXML
     private TableView<User> tableView;
 
+    @FXML
+    private Label userLoggedInLbl;
+
     public void setService(Controller service){
         this.service = service;
         this.service.addObserver(this);
+        userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName() + " " + service.findOneByEmail(service.getCurrentEmail()).getLastName());
         initModel();
     }
 
@@ -65,11 +71,48 @@ public class MyFriendsController implements Observer {
         emailColumn.setCellValueFactory(new PropertyValueFactory<User, String>("email"));
         tableView.setItems(model);
         searchBar.textProperty().addListener(o -> handleFilter());
+        addUsersTableScrollbarListener();
     }
 
     private void initModel() {
-        List<User> users = service.getFriends(service.findOneByEmail(service.getCurrentEmail()));
-        model.setAll(users);
+        initFriends();
+    }
+
+    private void addUsersTableScrollbarListener() {
+        Platform.runLater(() -> {
+            ScrollBar tvScrollBar = (ScrollBar) tableView.lookup(".scroll-bar:vertical");
+            tvScrollBar.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if ((Double) newValue == 0.0) {
+                    if (firstLoadedUsersPage.getPageable().getPageNumb() > 1) {
+                        secondLoadedUsersPage = firstLoadedUsersPage;
+                        firstLoadedUsersPage = service.friendsOfAnUser(firstLoadedUsersPage.previousPageable(), service.findOneByEmail(service.getCurrentEmail()));
+                        setFriendModel();
+                    }
+                } else if ((Double) newValue == 1.0) {
+                    if (secondLoadedUsersPage.getContent().size() == secondLoadedUsersPage.getPageable().getPageSize()) {
+                        Page<User> newUsers = service.friendsOfAnUser(secondLoadedUsersPage.nextPageable(), service.findOneByEmail(service.getCurrentEmail()));
+
+                        if (!newUsers.getContent().isEmpty()) {
+                            firstLoadedUsersPage = secondLoadedUsersPage;
+                            secondLoadedUsersPage = newUsers;
+                            setFriendModel();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    private void initFriends(){
+        firstLoadedUsersPage = service.friendsOfAnUser(new PageableImpl<>(1, 4), service.findOneByEmail(service.getCurrentEmail()));
+        secondLoadedUsersPage = service.friendsOfAnUser(new PageableImpl<>(2, 4), service.findOneByEmail(service.getCurrentEmail()));
+        setFriendModel();
+    }
+
+    private void setFriendModel(){
+        List<User> friends = firstLoadedUsersPage.getContent();
+        friends.addAll(secondLoadedUsersPage.getContent());
+        model.setAll(friends);
     }
 
     @FXML

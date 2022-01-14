@@ -99,5 +99,6 @@ public interface Repository<ID, E extends Entity<ID>> extends UserPgRepository, 
     public List<E> conversation(String email1, String email2);
     public Iterable<E> getReqByEmail(String email);
     public Iterable<Cerere> getSentReqs(String email);
+    public List<User> friendsOfAnUser(User user);
 }
 

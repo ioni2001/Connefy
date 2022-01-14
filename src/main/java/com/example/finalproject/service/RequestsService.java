@@ -52,7 +52,11 @@ public class RequestsService<ID,E extends Entity<ID>> extends Observable impleme
     }
 
     public Iterable<Cerere> getSentReqs(String email){
-        return (Iterable<Cerere>) this.requestRepo.getSentReqs(email);
+        return this.requestRepo.getSentReqs(email);
+    }
+
+    public Page<Cerere> getSentReqs(Pageable<Cerere> pageable, String email){
+        return this.requestRepo.getSentReqs(pageable, email);
     }
 
 

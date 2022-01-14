@@ -4,16 +4,26 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public class MainController {
 
     private Controller service;
     private Stage primaryStage;
+
+    @FXML
+    private DatePicker endDate1;
+
+    @FXML
+    private TextField friendEmail1;
+
+    @FXML
+    private DatePicker startDate1;
 
     @FXML
     private Label userLoggedInLbl;
@@ -24,7 +34,7 @@ public class MainController {
 
     public void setService(Controller service) {
         this.service = service;
-        userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName());
+        userLoggedInLbl.setText(service.findOneByEmail(service.getCurrentEmail()).getFirstName() + " " + service.findOneByEmail(service.getCurrentEmail()).getLastName());
     }
 
     public void setStage(Stage primaryStage) {
@@ -101,8 +111,41 @@ public class MainController {
     }
 
     public void handleGeneralButton(ActionEvent actionEvent) {
+        LocalDate start = startDate1.getValue();
+        LocalDate end = endDate1.getValue();
+        if(start.isAfter(end)){
+            MessageAlert.showErrorMessage(null, "Invalid time interval!");
+        }
+        else{
+            try{
+                this.service.saveGeneralReport(this.service.getCurrentEmail(), Timestamp.valueOf(start.atStartOfDay().plusDays(1).minusSeconds(1)), Timestamp.valueOf(end.atStartOfDay()));
+                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Information", "Report generated successfully into E:/PDFExport/reports.pdf !");
+            }catch (IOException e) {
+                MessageAlert.showErrorMessage(null, "Could not save report as pdf!");
+                e.printStackTrace();
+            }
+        }
     }
 
     public void handleMessagesReport(ActionEvent actionEvent) {
+        LocalDate start = startDate1.getValue();
+        LocalDate end = endDate1.getValue();
+        if(start.isAfter(end)){
+            MessageAlert.showErrorMessage(null, "Invalid time interval!");
+        }
+        else{
+            String friend = friendEmail1.getText();
+            try{
+                if (friendEmail1.getText().isEmpty()) {
+                    MessageAlert.showErrorMessage(null, "Please write your friend email first!");
+                    return;
+                }
+                this.service.saveConversation(this.service.getCurrentEmail(), friend, Timestamp.valueOf(start.atStartOfDay().plusDays(1).minusSeconds(1)), Timestamp.valueOf(end.atStartOfDay()));
+                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Information", "Report generated successfully into E:/PDFExport/reports.pdf !");
+            }catch (IOException e) {
+                MessageAlert.showErrorMessage(null, "Could not save report as pdf!");
+                e.printStackTrace();
+            }
+        }
     }
 }

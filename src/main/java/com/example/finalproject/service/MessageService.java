@@ -2,6 +2,8 @@ package com.example.finalproject.service;
 
 import com.example.finalproject.domain.*;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
+import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.FriendshipMemoryRepository;
 import com.example.finalproject.utils.Constants;
@@ -67,5 +69,9 @@ public class MessageService  <ID, E extends Entity<ID>> extends Observable imple
 
     public List<Message> conversation(String email1, String email2){
         return (List<Message>) this.messageRepository.conversation(email1, email2);
+    }
+
+    public Page<Message> conversation(Pageable<Message> pageable, String email1, String email2){
+        return this.messageRepository.conversation(pageable, email1, email2);
     }
 }

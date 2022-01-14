@@ -58,6 +58,11 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
     }
 
     @Override
+    public List<User> friendsOfAnUser(User user) {
+        return null;
+    }
+
+    @Override
     public Iterable<Cerere> getAllEntities() {
         List<Cerere> cereri = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
@@ -154,13 +159,32 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
     }
 
     @Override
-    public Long getCurrentId() {
-        return null;
-    }
+    public Page<Cerere> getSentReqs(Pageable<Cerere> pageable, String email) {
+        List<Cerere> cereri = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT * FROM cereri WHERE email_sender = ? LIMIT (?) OFFSET (?)");){
+            statement.setString(1, email);
+            statement.setLong(2, pageable.getPageSize());
+            statement.setLong(3, pageable.getPageSize()*(pageable.getPageNumb()-1));
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String status = resultSet.getString("status");
+                String email1 = resultSet.getString("email_sender");
+                String email2 = resultSet.getString("email_recv");
+                String data = resultSet.getString("data");
 
-    @Override
-    public void setCurrentId(Long currentId) {
+                Cerere c = new Cerere(email1, email2,status,data);
+                c.setId(id);
+                cereri.add(c);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
 
+        return new PageImpl<>(pageable, cereri);
     }
 
     @Override
@@ -204,6 +228,74 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
     }
 
     @Override
+    public void removeFriendRequest(String email1, String email2) {
+        String sql = "delete from cereri where email_sender = ? and email_recv = ? or email_sender = ? and email_recv = ?";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email1);
+            ps.setString(2, email2);
+            ps.setString(3, email2);
+            ps.setString(4, email1);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Iterable<Cerere> getReqByEmail(String email) {
+        Set<Cerere> cereri = new HashSet<>();
+        String sql = "SELECT * FROM cereri WHERE email_recv= ?";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                Long id = resultSet.getLong("id");
+                String status = resultSet.getString("status");
+                String email1 = resultSet.getString("email_sender");
+                String email2 = resultSet.getString("email_recv");
+                String data = resultSet.getString("data");
+
+                Cerere c = new Cerere(email1, email2,status,data);
+                c.setId(id);
+                cereri.add(c);
+            }
+            return cereri;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cereri;
+    }
+
+    @Override
+    public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        List<Cerere> cereri = new ArrayList<>();
+        String sql = "SELECT * FROM cereri WHERE email_recv= ? LIMIT (?) OFFSET (?)";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, email);
+            statement.setLong(2, pageable.getPageSize());
+            statement.setLong(3, pageable.getPageSize()*(pageable.getPageNumb()-1));
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                Long id = resultSet.getLong("id");
+                String status = resultSet.getString("status");
+                String email1 = resultSet.getString("email_sender");
+                String email2 = resultSet.getString("email_recv");
+                String data = resultSet.getString("data");
+
+                Cerere c = new Cerere(email1, email2,status,data);
+                c.setId(id);
+                cereri.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new PageImpl<>(pageable,cereri);
+    }
+
+    @Override
     public String getCurrentEmail() {
         return null;
     }
@@ -234,18 +326,13 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
     }
 
     @Override
-    public void removeFriendRequest(String email1, String email2) {
-        String sql = "delete from cereri where email_sender = ? and email_recv = ? or email_sender = ? and email_recv = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, email1);
-            ps.setString(2, email2);
-            ps.setString(3, email2);
-            ps.setString(4, email1);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public Long getCurrentId() {
+        return null;
+    }
+
+    @Override
+    public void setCurrentId(Long currentId) {
+
     }
 
     @Override
@@ -254,66 +341,13 @@ public class RequestsDbRepository implements Repository<Long,Cerere> {
     }
 
     @Override
-    public Iterable<Cerere> getReqByEmail(String email) {
-        Set<Cerere> cereri = new HashSet<>();
-        String sql = "SELECT * FROM cereri WHERE email_recv= ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, email);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
-                Long id = resultSet.getLong("id");
-                String status = resultSet.getString("status");
-                String email1 = resultSet.getString("email_sender");
-                String email2 = resultSet.getString("email_recv");
-                String data = resultSet.getString("data");
-
-                Cerere c = new Cerere(email1, email2,status,data);
-                c.setId(id);
-                cereri.add(c);
-            }
-            return cereri;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return cereri;
-    }
-
-    @Override
-    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
+    public Page<User> friendsOfAnUser(Pageable<User> pageable, User user) {
         return null;
     }
 
     @Override
     public Page<Message> conversation(Pageable<Message> pageable, String email1, String email2) {
         return null;
-    }
-
-    @Override
-    public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
-        List<Cerere> cereri = new ArrayList<>();
-        String sql = "SELECT * FROM cereri WHERE email_recv= ? LIMIT (?) OFFSET (?)";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, email);
-            statement.setLong(2, pageable.getPageSize());
-            statement.setLong(3, pageable.getPageSize()*(pageable.getPageNumb()-1));
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
-                Long id = resultSet.getLong("id");
-                String status = resultSet.getString("status");
-                String email1 = resultSet.getString("email_sender");
-                String email2 = resultSet.getString("email_recv");
-                String data = resultSet.getString("data");
-
-                Cerere c = new Cerere(email1, email2,status,data);
-                c.setId(id);
-                cereri.add(c);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new PageImpl<>(pageable,cereri);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.example.finalproject.domain.validators.exceptions.EntityNullException
 import com.example.finalproject.domain.validators.exceptions.ExistanceException;
 import com.example.finalproject.domain.validators.exceptions.NotExistanceException;
 import com.example.finalproject.paging.Page;
+import com.example.finalproject.paging.PageImpl;
 import com.example.finalproject.paging.Pageable;
 import com.example.finalproject.repository.Repository;
 import com.example.finalproject.repository.memory.FriendshipMemoryRepository;
@@ -75,7 +76,7 @@ public class MessageDbRepository implements Repository<Long, Message> {
             if(resultSet.next()){
                 String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
-                String parola = resultSet.getString(4);
+                String parola = resultSet.getString(5);
                 user = new User(firstName, lastName, email,parola);
                 user.setId(resultSet.getLong(1));
                 return user;
@@ -214,12 +215,66 @@ public class MessageDbRepository implements Repository<Long, Message> {
     }
 
     @Override
+    public Page<Message> conversation(Pageable<Message> pageable, String email1, String email2) {
+        List<Message> messagesList = new ArrayList<>();
+        String sql = """
+                        SELECT * from messages 
+                        where fromtbl = ? and totbl like ?
+                        or fromtbl = ? and totbl like ?
+                        LIMIT (?) OFFSET (?)
+                        """;
+
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, email1);
+            statement.setString(2, "%" + email2 + "%");
+            statement.setString(3, email2);
+            statement.setString(4, "%" + email1 + "%");
+            statement.setLong(5, pageable.getPageSize());
+            statement.setLong(6, pageable.getPageSize()*(pageable.getPageNumb()-1));
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String fromStr = resultSet.getString("fromtbl");
+                String toStr = resultSet.getString("totbl");
+                String messageStr = resultSet.getString("messagetbl");
+                Long replyID = resultSet.getLong("reply");
+                String date = resultSet.getString("datetbl");
+
+                User from = this.getUserFromUsers(fromStr);
+                if(from != null) {
+
+                    List<String> toSplit = Arrays.asList(toStr.split(";"));
+                    List<User> to = new ArrayList<>();
+                    for (String email : toSplit) {
+                        if(this.getUserFromUsers(email) != null)
+                            to.add(this.getUserFromUsers(email));
+                    }
+
+                    Message reply = this.findOne(replyID);
+                    Message message = new Message(id, from, to, messageStr, reply, date);
+                    messagesList.add(message);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new PageImpl<>(pageable, messagesList);
+    }
+
+    @Override
     public Iterable<Message> getReqByEmail(String email) {
         return null;
     }
 
     @Override
     public Iterable<Cerere> getSentReqs(String email) {
+        return null;
+    }
+
+    @Override
+    public List<User> friendsOfAnUser(User user) {
         return null;
     }
 
@@ -278,17 +333,17 @@ public class MessageDbRepository implements Repository<Long, Message> {
     }
 
     @Override
-    public Page<Friendship> friendshipsOfAnUser(Pageable<Friendship> pageable, User user) {
-        return null;
-    }
-
-    @Override
-    public Page<Message> conversation(Pageable<Message> pageable, String email1, String email2) {
+    public Page<User> friendsOfAnUser(Pageable<User> pageable, User user) {
         return null;
     }
 
     @Override
     public Page<Cerere> getReqByName(Pageable<Cerere> pageable, String email) {
+        return null;
+    }
+
+    @Override
+    public Page<Cerere> getSentReqs(Pageable<Cerere> pageable, String email) {
         return null;
     }
 
