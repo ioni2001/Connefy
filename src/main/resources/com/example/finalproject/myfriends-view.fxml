@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -101,23 +102,25 @@
             </GridPane>
          </top>
          <center>
-                <GridPane onMouseClicked="#handleLogOutButton" prefHeight="534.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+                <GridPane prefHeight="639.0" prefWidth="1024.0" BorderPane.alignment="CENTER">
                     <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="329.0" minWidth="10.0" prefWidth="140.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="897.0" minWidth="10.0" prefWidth="748.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="239.0" minWidth="10.0" prefWidth="140.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="137.39998779296877" minHeight="10.0" prefHeight="137.39998779296877" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="302.0" minHeight="10.0" prefHeight="149.5999755859375" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="291.20001831054685" minHeight="10.0" percentHeight="0.0" prefHeight="249.60002441406243" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="197.0" minHeight="10.0" prefHeight="39.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="214.0" minHeight="10.0" prefHeight="214.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="95.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="302.0" minHeight="10.0" prefHeight="202.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="118.0" minHeight="10.0" percentHeight="0.0" prefHeight="130.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                        <HBox prefHeight="134.0" prefWidth="747.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <children>
-                                <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="364.0" promptText="Search on connefy">
+                                <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="364.0" promptText="Search for a friend">
                                     <HBox.margin>
-                                        <Insets left="20.0" top="30.0" />
+                                        <Insets top="30.0" />
                                     </HBox.margin>
                            <font>
                               <Font size="14.0" />
@@ -125,7 +128,7 @@
                                 </TextField>
                         <HBox alignment="TOP_CENTER" prefHeight="123.0" prefWidth="394.0" spacing="20.0">
                            <children>
-                                      <Button mnemonicParsing="false" onAction="#handleRemoveFriendBtn" prefHeight="32.0" prefWidth="105.0" text="Remove Friend" textFill="#3558c2" />
+                                      <Button mnemonicParsing="false" onAction="#handleRemoveFriendBtn" prefHeight="32.0" prefWidth="105.0" style="-fx-background-color: white;" text="Remove Friend" textFill="#3558c2" />
                               <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="or">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
@@ -143,7 +146,7 @@
                         </HBox>
                             </children>
                         </HBox>
-                        <TableView fx:id="tableView" prefHeight="294.0" prefWidth="747.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <TableView fx:id="tableView" prefHeight="139.0" prefWidth="747.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                             <columns>
                                 <TableColumn fx:id="firstNameColumn" prefWidth="237.0" text="First Name" />
                                 <TableColumn fx:id="lastNameColumn" prefWidth="243.0" text="Last Name" />
@@ -153,7 +156,7 @@
                         <Insets />
                      </GridPane.margin>
                         </TableView>
-                  <ImageView fitHeight="74.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
+                  <ImageView fitHeight="74.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets left="20.0" />
                      </GridPane.margin>
@@ -161,10 +164,32 @@
                         <Image url="@logo.png" />
                      </image>
                   </ImageView>
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <VBox prefHeight="193.0" prefWidth="479.0">
+                           <children>
+                              <TextField fx:id="searchAdd" prefHeight="34.0" prefWidth="479.0" promptText="Search on connefy" style="-fx-border-radius: 7px 0px 0px 0px;">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="40.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <ListView fx:id="listView" maxWidth="-Infinity" prefHeight="83.0" prefWidth="267.0" />
+                           </children>
+                        </VBox>
+                        <Button fx:id="addButt" maxHeight="-Infinity" mnemonicParsing="false" onAction="#add" prefHeight="34.0" prefWidth="146.0" style="-fx-background-color: #072a90; -fx-border-color: #072a90;" text="Add" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets top="40.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                     </children>
-                    <padding>
-                        <Insets top="120.0" />
-                    </padding>
                 </GridPane>
          </center>
       </BorderPane>

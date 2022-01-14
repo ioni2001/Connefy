@@ -20,31 +20,31 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.RequestsController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: #4364C7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.RequestsController">
     <stylesheets>
         <URL value="@table.css" />
     </stylesheets>
     <children>
       <BorderPane prefHeight="720.0" prefWidth="1024.0">
          <center>
-                <GridPane centerShape="false" prefHeight="614.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+                <GridPane centerShape="false" prefHeight="0.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="842.0" minWidth="10.0" prefWidth="727.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="495.0" minWidth="10.0" prefWidth="273.0" />
                     </columnConstraints>
                     <rowConstraints>
                   <RowConstraints maxHeight="179.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="179.0" minHeight="0.0" prefHeight="105.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="380.0" minHeight="10.0" prefHeight="255.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="364.0" minHeight="8.0" prefHeight="114.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="364.0" minHeight="10.0" prefHeight="102.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="179.0" minHeight="0.0" prefHeight="154.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="380.0" minHeight="10.0" prefHeight="208.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="364.0" minHeight="8.0" prefHeight="112.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="118.0" minHeight="0.0" prefHeight="130.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
                         <HBox prefHeight="82.0" prefWidth="727.0" GridPane.rowIndex="1">
                             <children>
-                                <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="292.0" promptText="Search on connefy" style="-fx-border-color: #072a90; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-border-style: solid; -fx-border-width: 2px;">
+                                <TextField fx:id="searchBar" prefHeight="34.0" prefWidth="292.0" promptText="Search on connefy">
                                     <HBox.margin>
-                                        <Insets left="50.0" top="100.0" />
+                                        <Insets left="50.0" top="80.0" />
                                     </HBox.margin>
                            <font>
                               <Font size="14.0" />
@@ -52,7 +52,7 @@
                                 </TextField>
                             </children>
                         </HBox>
-                        <TableView fx:id="cereri" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" prefHeight="163.0" prefWidth="648.0" GridPane.rowIndex="2">
+                        <TableView fx:id="cereri" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" prefHeight="0.0" prefWidth="0.0" GridPane.rowIndex="2">
                             <columns>
                                 <TableColumn fx:id="from" prefWidth="222.0" text="From" />
                                 <TableColumn fx:id="status" prefWidth="236.0" text="Status" />
@@ -61,15 +61,12 @@
                             <GridPane.margin>
                                 <Insets left="40.0" right="40.0" />
                             </GridPane.margin>
-                     <padding>
-                        <Insets top="110.0" />
-                     </padding>
                         </TableView>
                   <VBox prefHeight="272.0" prefWidth="273.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <children>
                                 <Button fx:id="accept" mnemonicParsing="false" onAction="#acceptButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: green; -fx-border-color: white;" text="Accept" textFill="WHITE">
                            <VBox.margin>
-                              <Insets top="130.0" />
+                              <Insets top="20.0" />
                            </VBox.margin>
                         </Button>
                         <Button layoutX="80.0" layoutY="15.0" mnemonicParsing="false" onAction="#declineButt" prefHeight="39.0" prefWidth="138.0" style="-fx-background-color: crimson; -fx-border-color: white;" text="Decline" textFill="WHITE">
@@ -106,13 +103,16 @@
                   </HBox>
                   <ImageView fitHeight="74.0" fitWidth="74.0" nodeOrientation="INHERIT" onMouseClicked="#handleLogOutButton" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4">
                      <GridPane.margin>
-                        <Insets left="20.0" />
+                        <Insets bottom="3.0" left="20.0" />
                      </GridPane.margin>
                      <image>
                         <Image url="@logo.png" />
                      </image>
                   </ImageView>
                     </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
                 </GridPane>
          </center>
          <top>

@@ -9,17 +9,22 @@ import com.example.finalproject.domain.validators.exceptions.ExistanceException;
 import com.example.finalproject.paging.Page;
 import com.example.finalproject.paging.PageableImpl;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.w3c.dom.events.MouseEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,29 +88,28 @@ public class RequestsController implements Observer {
         date.setCellValueFactory(new PropertyValueFactory<Cerere, String>("date"));
         from.setCellValueFactory(new PropertyValueFactory<Cerere, String>("email_sender"));
         cereri.setItems(model);
-        searchBar.textProperty().addListener(o->handleFilter());
+        searchBar.textProperty().addListener(o -> handleFilter());
         addReqsTableScrollbarListener();
         recv.setSelected(true);
     }
 
 
-    public void acceptButt(){
+    public void acceptButt() {
         Cerere a = this.cereri.getSelectionModel().getSelectedItem();
-        try{
-            if(a.getStatus().equals("pending") && a.getEmail_recv().equals(service.getCurrentEmail())) {
+        try {
+            if (a.getStatus().equals("pending") && a.getEmail_recv().equals(service.getCurrentEmail())) {
                 service.addFriend(a.getEmail_sender());
                 a.setStatus("approved");
                 service.updateRequest(a);
-            }
-            else{
+            } else {
                 MessageAlert.showErrorMessage(null, "Already friends !");
             }
-        }
-        catch (ValidationException e){
+        } catch (ValidationException e) {
             MessageAlert.showErrorMessage(null, e.getMessage());
-        }
-        catch(ExistanceException e){
+        } catch (ExistanceException e) {
             MessageAlert.showErrorMessage(null, e.getMessage());
+        }catch (Exception e){
+            MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, null,"Select someone firstly!");
         }
     }
 
@@ -128,7 +132,7 @@ public class RequestsController implements Observer {
                 if ((Double) newValue == 0.0) {
                     if (firstLoadedCererePage.getPageable().getPageNumb() > 1) {
                         secondLoadedCererePage = firstLoadedCererePage;
-                        firstLoadedCererePage = service.getRequests(firstLoadedCererePage.previousPageable(),service.getCurrentEmail());
+                        firstLoadedCererePage = service.getRequests(firstLoadedCererePage.previousPageable(), service.getCurrentEmail());
                         setReqsModel();
                     }
                 } else if ((Double) newValue == 1.0) {
@@ -153,7 +157,7 @@ public class RequestsController implements Observer {
                 if ((Double) newValue == 0.0) {
                     if (firstLoadedCererePage.getPageable().getPageNumb() > 1) {
                         secondLoadedCererePage = firstLoadedCererePage;
-                        firstLoadedCererePage = service.getRequests(firstLoadedCererePage.previousPageable(),service.getCurrentEmail());
+                        firstLoadedCererePage = service.getRequests(firstLoadedCererePage.previousPageable(), service.getCurrentEmail());
                         setReqsSentModel();
                     }
                 } else if ((Double) newValue == 1.0) {
@@ -171,25 +175,25 @@ public class RequestsController implements Observer {
         });
     }
 
-    private void initReqs(){
-        firstLoadedCererePage = service.getRequests(new PageableImpl<>(1, 4),service.getCurrentEmail());
-        secondLoadedCererePage = service.getRequests(new PageableImpl<>(2, 4),service.getCurrentEmail());
+    private void initReqs() {
+        firstLoadedCererePage = service.getRequests(new PageableImpl<>(1, 4), service.getCurrentEmail());
+        secondLoadedCererePage = service.getRequests(new PageableImpl<>(2, 4), service.getCurrentEmail());
         setReqsModel();
     }
 
-    private void setReqsModel(){
+    private void setReqsModel() {
         List<Cerere> cereri = firstLoadedCererePage.getContent();
         cereri.addAll(secondLoadedCererePage.getContent());
         model.setAll(cereri);
     }
 
-    private void initSentReqs(){
-        firstLoadedCererePage = service.getSentReqs(new PageableImpl<>(1, 4),service.getCurrentEmail());
-        secondLoadedCererePage = service.getSentReqs(new PageableImpl<>(2, 4),service.getCurrentEmail());
+    private void initSentReqs() {
+        firstLoadedCererePage = service.getSentReqs(new PageableImpl<>(1, 4), service.getCurrentEmail());
+        secondLoadedCererePage = service.getSentReqs(new PageableImpl<>(2, 4), service.getCurrentEmail());
         setReqsSentModel();
     }
 
-    private void setReqsSentModel(){
+    private void setReqsSentModel() {
         List<Cerere> cereri = firstLoadedCererePage.getContent();
         cereri.addAll(secondLoadedCererePage.getContent());
         model.setAll(cereri);
@@ -203,7 +207,7 @@ public class RequestsController implements Observer {
         Predicate<Cerere> p1 = n -> n.getEmail_sender().contains(searchBar.getText());
         Predicate<Cerere> p2 = n -> n.getStatus().contains(searchBar.getText());
 
-        if(sent.isDisable()) {
+        if (!sent.isSelected()) {
             Iterable<Cerere> cereri = service.getRequests(service.getCurrentEmail());
             List<Cerere> allCereri = new ArrayList<>();
             cereri.forEach(allCereri::add);
@@ -212,8 +216,7 @@ public class RequestsController implements Observer {
             List<Cerere> cereri2 = cerereList
                     .stream().filter(p1.or(p2)).collect(Collectors.toList());
             model.setAll(cereri2);
-        }
-        else{
+        } else if (recv.isSelected()) {
             List<Cerere> cereri = (List<Cerere>) service.getAllSent(service.getCurrentEmail());
             List<Cerere> cereri2 = cereri
                     .stream().filter(p1.or(p2)).collect(Collectors.toList());
@@ -223,31 +226,38 @@ public class RequestsController implements Observer {
 
     public void declineButt(ActionEvent actionEvent) {
         Cerere a = this.cereri.getSelectionModel().getSelectedItem();
-        if(a.getStatus().equals("pending") && a.getEmail_recv().equals(service.getCurrentEmail())) {
-            a.setStatus("declined");
-            service.updateRequest(a);
-            MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Declined !");
+        try {
+            if (a.getStatus().equals("pending") && a.getEmail_recv().equals(service.getCurrentEmail())) {
+                a.setStatus("declined");
+                service.updateRequest(a);
+                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, null, "Declined !");
+            } else {
+                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, null, "Already declined or approved !");
+            }
         }
-        else{
-            MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Already declined or approved !");
+        catch (Exception e){
+            MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, null,"Select someone firstly!");
         }
     }
 
     public void cancelButt(ActionEvent actionEvent) {
         Cerere a = this.cereri.getSelectionModel().getSelectedItem();
-        System.out.println(a);
-        Long id = a.getId();
-        if(a.getStatus().equals("pending") && a.getEmail_sender().equals(service.getCurrentEmail())) {
-            service.removeRequest(id);
-            initModel();
-            MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Canceled !");
+        try {
+            Long id = a.getId();
+            if (a.getStatus().equals("pending") && a.getEmail_sender().equals(service.getCurrentEmail())) {
+                service.removeRequest(id);
+                initModel();
+                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, null, "Canceled !");
+            } else {
+                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, null, "Already declined or approved !");
+            }
         }
-        else{
-            MessageAlert.showMessage( null, Alert.AlertType.INFORMATION,null,"Already declined or approved !");
+        catch (Exception e){
+            MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, null,"Select someone firstly!");
         }
     }
 
-    public void onSent(){
+    public void onSent() {
         addReqsSentTableScrollbarListener();
         initSentReqs();
         status.setCellValueFactory(new PropertyValueFactory<Cerere, String>("status"));
@@ -257,7 +267,7 @@ public class RequestsController implements Observer {
         recv.setSelected(false);
     }
 
-    public void onRecv(){
+    public void onRecv() {
         initModel();
         from.setCellValueFactory(new PropertyValueFactory<Cerere, String>("email_sender"));
         from.setText("From");
@@ -326,9 +336,10 @@ public class RequestsController implements Observer {
         myFriendsController.setService(service);
         myFriendsController.setStage(primaryStage);
     }
+
     @Override
     public void update(Observable o, Object arg) {
-        if(sent.isDisable())
+        if (sent.isDisable())
             initModel();
         else
             initSentReqs();
